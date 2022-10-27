@@ -13,9 +13,15 @@ local packer_bootstrap = ensure_packer()
 
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
+
+    -- Visual
     use {'gruvbox-community/gruvbox'} --, config = 'vim.cmd [[colorscheme gruvbox]]'}
     use {'RRethy/nvim-base16', config = 'vim.cmd [[colorscheme base16-nord]]'}
     use {'nvim-lualine/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true}, config = function() require('lualine').setup() end} 
+
+    -- Database
+    use {'tpope/vim-dadbod'}
+    use {'kristijanhusak/vim-dadbod-ui'}
   
     if packer_bootstrap then
         require('packer').sync()
@@ -57,4 +63,9 @@ map('n', '<leader>O', 'O<esc>')
 map('i', 'jk', '<esc>')
 map('i', '<c-e>', '<esc>A') -- mimic shell end of the line
 map('i', '<c-a>', '<esc>I') -- mimic shell start of the line
+
+map('n', '<leader>du', '<cmd>DBUIToggle<cr>')
+map('n', '<leader>df', '<cmd>DBUIFindBuffer<cr>')
+map('n', '<leader>dr', '<cmd>DBUIRenameBuffer<cr>')
+map('n', '<leader>dl', '<cmd>DBUILastQueryInfo<cr>')
 
