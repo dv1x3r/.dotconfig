@@ -1,0 +1,30 @@
+services:
+    mssql:
+        image: "mcr.microsoft.com/mssql/server:2019-latest"
+        ports:
+            - 1433:1433
+        environment:
+            ACCEPT_EULA: Y
+            SA_PASSWORD: Password_123
+            MSSQL_PID: Developer
+        volumes:
+            - ./.volumes/mssql:/var/opt/mssql
+
+    pg:
+        image: postgres:14.5
+        ports:
+            - 5432:5432
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+        volumes:
+            - ./.volumes/pg:/var/lib/postgresql/data
+
+    mysql:
+        image: mysql:8.0.30
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: qwerty
+        volumes:
+            - ./.volumes/mysql:/var/lib/mysql

@@ -1,0 +1,69 @@
+.PHONY: install
+install:
+	yarn install
+
+.PHONY: build
+build:
+	yarn rw build
+
+.PHONY: dev
+dev:
+	yarn rw dev
+
+.PHONY: serve
+serve:
+	yarn rw serve
+
+.PHONY: test
+test:
+	yarn rw test
+
+.PHONY: lint
+lint:
+	yarn rw lint --fix
+
+.PHONY: storybook
+storybook:
+	yarn rw storybook
+
+.PHONY: db-studio
+db-studio:
+	yarn rw prisma studio
+
+.PHONY: db-generate
+db-generate:
+	yarn rw prisma generate
+
+.PHONY: db-migrate
+db-migrate:
+	yarn rw prisma migrate dev
+
+.PHONY: db-save
+db-save:
+	yarn rw prisma migrate dev --create-only
+
+.PHONY: db-deploy
+db-deploy:
+	yarn rw prisma migrate deploy
+
+.PHONY: db-reset
+db-reset:
+	yarn rw prisma migrate reset
+
+.PHONY: db-seed
+db-seed:
+	yarn rw prisma db seed
+
+.PHONY: create
+create:
+	yarn create redwood-app my-redwood-app
+
+.PHONY: clean
+clean:
+	rm -rf .redwood
+	rm -rf api/dist
+	rm -rf api/types
+	rm -rf web/dist
+	rm -rf web/types
+	rm -rf web/node_modules
+	rm -rf node_modules
