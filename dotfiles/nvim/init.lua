@@ -51,7 +51,7 @@ o.wrap = false -- wrap to the next line
 o.ignorecase = true
 o.smartcase = true
 o.incsearch = true
-o.hlsearch = false
+o.hlsearch = true
 
 local function map(m, k, v)
     vim.keymap.set(m, k, v)
