@@ -1,8 +1,7 @@
-local ensure_packer = function()
-    local fn = vim.fn
-    local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-    if fn.empty(fn.glob(install_path)) > 0 then
-        fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+local function ensure_packer()
+    local install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+    if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+        vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
         vim.cmd [[packadd packer.nvim]]
         return true
     end
@@ -21,25 +20,31 @@ require('packer').startup(function(use)
 
     -- Database
     use {'tpope/vim-dadbod'}
-    use {'kristijanhusak/vim-dadbod-ui'}
+    use {'kristijanhusak/vim-dadbod-ui', config = function() vim.g.db_ui_save_location = vim.fn.stdpath('data')..'/db_ui/' end}
+
+    -- Fun
+    use 'ThePrimeagen/vim-be-good'
   
     if packer_bootstrap then
         require('packer').sync()
     end
 end)
 
-local g = vim.g
 local o = vim.o
-local A = vim.api
-
-g.mapleader = ','
 
 o.background = 'dark'
 o.encoding = 'utf-8'
 o.langmap = 'ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz'
 o.clipboard = 'unnamedplus' -- shared clipboard
 o.number = true -- line numbers
+o.relativenumber = true -- relative line numbers
 o.cursorline = true -- highlight current line
+o.signcolumn = 'yes' -- column on the left side of line numbers
+
+o.swapfile = false
+o.backup = false
+o.undofile = true
+o.undodir = vim.fn.stdpath('data')..'/undodir/'
 
 o.scrolloff = 8 -- number of lines to keep visible
 o.tabstop = 4 -- number of columns per tab
@@ -51,11 +56,14 @@ o.wrap = false -- wrap to the next line
 o.ignorecase = true
 o.smartcase = true
 o.incsearch = true
-o.hlsearch = true
+o.hlsearch = false
 
-local function map(m, k, v)
-    vim.keymap.set(m, k, v)
+local function map(m, k, v, opts)
+    opts = opts or { noremap = true }
+    vim.keymap.set(m, k, v, opts)
 end
+
+vim.g.mapleader = ','
 
 map('n', '<leader>o', 'o<esc>')
 map('n', '<leader>O', 'O<esc>')
