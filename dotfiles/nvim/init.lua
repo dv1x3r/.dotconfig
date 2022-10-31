@@ -12,19 +12,58 @@ local packer_bootstrap = ensure_packer()
 
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
-
-    -- Visual
-    use {'gruvbox-community/gruvbox'} --, config = 'vim.cmd [[colorscheme gruvbox]]'}
+    use 'ThePrimeagen/vim-be-good' -- :VimBeGood - training games
     use {'RRethy/nvim-base16', config = 'vim.cmd [[colorscheme base16-nord]]'}
-    use {'nvim-lualine/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true}, config = function() require('lualine').setup() end} 
+    use {'gruvbox-community/gruvbox'} --, config = 'vim.cmd [[colorscheme gruvbox]]' }
+    use {
+        'nvim-lualine/lualine.nvim',
+        requires = {'kyazdani42/nvim-web-devicons'},
+        config = function() require('lualine').setup() end
+    }
+    use {
+        'nvim-telescope/telescope.nvim',
+        requires = {'nvim-lua/plenary.nvim'},
+        config = function()
+            local builtin = require('telescope.builtin')
+            vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+            vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+            vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+            vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+        end
+    }
+    use {
+        'numToStr/Comment.nvim', -- gcc commenting code
+        config = function() require('Comment').setup() end
+    }
+    use {
+        'TimUntersberger/neogit',
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'sindrets/diffview.nvim'
+        },
+        config = function() require('neogit').setup({integrations = {diffview = true}}) end
+    }
+    use {
+        'lewis6991/gitsigns.nvim',
+        config = function() require('gitsigns').setup() end
+    }
+    use {
+        'kristijanhusak/vim-dadbod-ui',
+        requires = {'tpope/vim-dadbod'},
+        config = function()
+            vim.g.db_ui_save_location = vim.fn.stdpath('data')..'/db_ui/'
+            vim.keymap.set('n', '<leader>du', '<cmd>DBUIToggle<cr>')
+            vim.keymap.set('n', '<leader>df', '<cmd>DBUIFindBuffer<cr>')
+            vim.keymap.set('n', '<leader>dr', '<cmd>DBUIRenameBuffer<cr>')
+            vim.keymap.set('n', '<leader>dl', '<cmd>DBUILastQueryInfo<cr>')
+        end
+    }
+    use {
+        'rcarriga/nvim-dap-ui',
+        requires = {'mfussenegger/nvim-dap'},
+        config = function() require('dapui').setup() end
+    }
 
-    -- Database
-    use {'tpope/vim-dadbod'}
-    use {'kristijanhusak/vim-dadbod-ui', config = function() vim.g.db_ui_save_location = vim.fn.stdpath('data')..'/db_ui/' end}
-
-    -- Fun
-    use 'ThePrimeagen/vim-be-good'
-  
     if packer_bootstrap then
         require('packer').sync()
     end
@@ -32,12 +71,14 @@ end)
 
 local o = vim.o
 
+o.termguicolors = true
 o.background = 'dark'
 o.encoding = 'utf-8'
 o.langmap = 'ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz'
+
 o.clipboard = 'unnamedplus' -- shared clipboard
-o.number = true -- line numbers
-o.relativenumber = true -- relative line numbers
+o.number = true
+o.relativenumber = true
 o.cursorline = true -- highlight current line
 o.signcolumn = 'yes' -- column on the left side of line numbers
 
@@ -56,7 +97,7 @@ o.wrap = false -- wrap to the next line
 o.ignorecase = true
 o.smartcase = true
 o.incsearch = true
-o.hlsearch = false
+o.hlsearch = true
 
 local function map(m, k, v, opts)
     opts = opts or { noremap = true }
@@ -68,12 +109,6 @@ vim.g.mapleader = ','
 map('n', '<leader>o', 'o<esc>')
 map('n', '<leader>O', 'O<esc>')
 
-map('i', 'jk', '<esc>')
-map('i', '<c-e>', '<esc>A') -- mimic shell end of the line
-map('i', '<c-a>', '<esc>I') -- mimic shell start of the line
-
-map('n', '<leader>du', '<cmd>DBUIToggle<cr>')
-map('n', '<leader>df', '<cmd>DBUIFindBuffer<cr>')
-map('n', '<leader>dr', '<cmd>DBUIRenameBuffer<cr>')
-map('n', '<leader>dl', '<cmd>DBUILastQueryInfo<cr>')
+map('i', '<c-e>', '<esc>A')
+map('i', '<c-a>', '<esc>I')
 
