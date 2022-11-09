@@ -1,7 +1,7 @@
 vim.o.encoding = 'utf-8'
 vim.o.langmap = 'ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz'
 vim.o.background = 'dark'
--- vim.o.termguicolors = true
+vim.o.termguicolors = true
 
 vim.o.number = true
 vim.o.relativenumber = true
