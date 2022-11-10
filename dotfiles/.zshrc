@@ -1,6 +1,3 @@
-export PATH="/opt/homebrew/opt/python@3.10/bin:$PATH"
-export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
-
 export HISTSIZE=10000
 export SAVEHIST=10000
 setopt HIST_IGNORE_ALL_DUPS

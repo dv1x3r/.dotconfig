@@ -179,11 +179,21 @@ require('packer').startup(function(use)
             })
 
             -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-            lspconfig.pyright.setup({})
+            -- lspconfig.pyright.setup({})
+            require('mason-lspconfig').setup_handlers({
+                function(server)
+                    lspconfig[server].setup({})
+                end
+            })
 
             local cmp = require('cmp')
             local luasnip = require('luasnip')
             require('luasnip.loaders.from_vscode').lazy_load()
+
+            local has_words_before = function()
+                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+                return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+            end
 
             cmp.setup({
                 -- completion = { autocomplete = false },
