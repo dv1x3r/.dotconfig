@@ -1,5 +1,4 @@
 vim.o.encoding = 'utf-8'
-vim.o.langmap = 'ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz'
 vim.o.background = 'dark'
 vim.o.termguicolors = true
 
@@ -78,10 +77,10 @@ require('packer').startup(function(use)
     use 'ThePrimeagen/vim-be-good'
     -- use {'RRethy/nvim-base16', config = 'vim.cmd [[colorscheme base16-nord]]'}
     use {'gruvbox-community/gruvbox', config = 'vim.cmd [[colorscheme gruvbox]]'}
-    use {'nvim-lualine/lualine.nvim', requires = {'ryanoasis/vim-devicons'}, config = function() require('lualine').setup() end}
+    use {'nvim-lualine/lualine.nvim', requires = {'ryanoasis/vim-devicons'}, config = function() require('lualine').setup({}) end}
     use {'lewis6991/gitsigns.nvim', config = function() require('gitsigns').setup() end}
-    use {'numToStr/Comment.nvim', config = function() require('Comment').setup() end}
-    use {'kylechui/nvim-surround', config = function() require('nvim-surround').setup() end}
+    use {'numToStr/Comment.nvim', config = function() require('Comment').setup() end} -- gc
+    use {'kylechui/nvim-surround', config = function() require('nvim-surround').setup() end} -- ys, ds, cs, visual S
     use {
         'rcarriga/nvim-dap-ui',
         requires = {'mfussenegger/nvim-dap'},
@@ -109,10 +108,10 @@ require('packer').startup(function(use)
                 defaults = {
                     mappings = {
                         i = {
-                            ['<C-k>'] = actions.move_selection_previous, -- move to prev result
-                            ['<C-j>'] = actions.move_selection_next, -- move to next result
-                        },
-                    },
+                            ['<C-k>'] = actions.move_selection_previous,
+                            ['<C-j>'] = actions.move_selection_next,
+                        }
+                    }
                 },
                 pickers = {
                     buffers = {
@@ -144,21 +143,24 @@ require('packer').startup(function(use)
         end
     }
     use {
-        'neovim/nvim-lspconfig',
+        'hrsh7th/nvim-cmp',
         requires = {
-            'hrsh7th/nvim-cmp',
             'hrsh7th/cmp-nvim-lsp',
+            'neovim/nvim-lspconfig',
+            'onsails/lspkind.nvim',
+            'j-hui/fidget.nvim',
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim',
-            -- 'glepnir/lspsaga.nvim',
-            -- 'onsails/lspkind.nvim',
             'L3MON4D3/LuaSnip',
             'saadparwaiz1/cmp_luasnip',
             'rafamadriz/friendly-snippets',
-            'j-hui/fidget.nvim',
+            'jose-elias-alvarez/null-ls.nvim',
+            'jayp0521/mason-null-ls.nvim',
         },
         config = function()
             -- https://vonheikemen.github.io/devlog/tools/setup-nvim-lspconfig-plus-nvim-cmp/
+            -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+            -- https://github.com/williamboman/mason-lspconfig.nvim
             local lspconfig = require('lspconfig')
             local lsp_defaults = lspconfig.util.default_config
             lsp_defaults.capabilities = vim.tbl_deep_extend(
@@ -166,37 +168,56 @@ require('packer').startup(function(use)
                 require('cmp_nvim_lsp').default_capabilities()
             )
 
-            -- https://github.com/williamboman/mason-lspconfig.nvim
             require('mason').setup({})
-            require('mason-lspconfig').setup({
+            local mason_lspconfig = require('mason-lspconfig')
+            mason_lspconfig.setup({
                 ensure_installed = {
+                    'tsserver',
                     'html',
                     'cssls',
-                    'tsserver',
                     'pyright',
                     'rust_analyzer',
+                    'sumneko_lua',
                 }
             })
-
-            -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-            -- lspconfig.pyright.setup({})
-            require('mason-lspconfig').setup_handlers({
+            mason_lspconfig.setup_handlers({
+                -- default server handler (if dedicated is not defined) 
                 function(server)
                     lspconfig[server].setup({})
-                end
+                end,
+                -- dedicated server handlers
+                ['sumneko_lua'] = function(_)
+                    require('lspconfig').sumneko_lua.setup({
+                        settings = {
+                            Lua = {
+                                runtime = { version = 'LuaJIT' },
+                                diagnostics = { globals = {'vim'} },
+                                workspace = { library = vim.api.nvim_get_runtime_file('', true), checkThirdParty = false },
+                                telemetry = { enable = false },
+                            }
+                        }
+                    })
+                end,
             })
 
+            -- require('mason-null-ls').setup({
+            --     ensure_installed = {
+            --         'autopep8',
+            --         'prettier',
+            --         'stylua',
+            --         'eslint_d',
+            --     },
+            --     automatic_setup = true,
+            -- })
+
             local cmp = require('cmp')
+            local lspkind = require('lspkind')
             local luasnip = require('luasnip')
             require('luasnip.loaders.from_vscode').lazy_load()
-
-            local has_words_before = function()
-                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-            end
+            require('fidget').setup()
 
             cmp.setup({
-                -- completion = { autocomplete = false },
+                completion = { autocomplete = false },
                 sources = cmp.config.sources({
                     { name = 'nvim_lsp' },
                     { name = 'luasnip', keyword_length = 2 },
@@ -205,6 +226,9 @@ require('packer').startup(function(use)
                     expand = function(args)
                         luasnip.lsp_expand(args.body)
                     end
+                },
+                formatting = {
+                    format = lspkind.cmp_format({ maxwidth = 50, ellipsis_char = '...' })
                 },
                 mapping = cmp.mapping.preset.insert({
                     ['<C-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
@@ -219,8 +243,6 @@ require('packer').startup(function(use)
                             cmp.select_next_item()
                         elseif luasnip.expand_or_jumpable() then
                             luasnip.expand_or_jump()
-                        elseif has_words_before() then
-                            cmp.complete()
                         else
                             fallback()
                         end
@@ -237,30 +259,28 @@ require('packer').startup(function(use)
                 }),
             })
 
-            require('fidget').setup()
-
             vim.o.completeopt = 'menu,menuone,noselect'
             vim.api.nvim_create_autocmd('LspAttach', {
-              desc = 'LSP actions',
-              callback = function()
-                local bufmap = function(mode, lhs, rhs)
-                  local opts = { buffer = true }
-                  vim.keymap.set(mode, lhs, rhs, opts)
+                desc = 'LSP actions',
+                callback = function()
+                    local bufmap = function(mode, lhs, rhs)
+                        vim.keymap.set(mode, lhs, rhs, { buffer = true })
+                    end
+                    bufmap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>') -- Displays hover information about the symbol under the cursor
+                    bufmap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>') -- Jump to the definition
+                    bufmap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>') -- Jump to declaration
+                    bufmap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>') -- Lists all the implementations for the symbol under the cursor
+                    bufmap('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>') -- Jumps to the definition of the type symbol
+                    bufmap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>') -- Lists all the references 
+                    bufmap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<cr>') -- Displays a function's signature information
+                    bufmap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>') -- Renames all references to the symbol under the cursor
+                    bufmap('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>') -- Selects a code action available at the current cursor position
+                    bufmap('x', '<F4>', '<cmd>lua vim.lsp.buf.range_code_action()<cr>') -- Selects a code action available at the current cursor position
+                    bufmap('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>') -- Show diagnostics in a floating window
+                    bufmap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>') -- Move to the previous diagnostic
+                    bufmap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>') -- Move to the next diagnostic
+                    bufmap('n', '<leader>lf', '<cmd>lua vim.lsp.buf.format()<cr>') -- Format current buffer
                 end
-                bufmap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>') -- Displays hover information about the symbol under the cursor
-                bufmap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>') -- Jump to the definition
-                bufmap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>') -- Jump to declaration
-                bufmap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>') -- Lists all the implementations for the symbol under the cursor
-                bufmap('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>') -- Jumps to the definition of the type symbol
-                bufmap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>') -- Lists all the references 
-                bufmap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<cr>') -- Displays a function's signature information
-                bufmap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>') -- Renames all references to the symbol under the cursor
-                bufmap('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>') -- Selects a code action available at the current cursor position
-                bufmap('x', '<F4>', '<cmd>lua vim.lsp.buf.range_code_action()<cr>') -- Selects a code action available at the current cursor position
-                bufmap('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>') -- Show diagnostics in a floating window
-                bufmap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>') -- Move to the previous diagnostic
-                bufmap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>') -- Move to the next diagnostic
-              end
             })
         end
     }
