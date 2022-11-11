@@ -75,13 +75,36 @@ local packer_bootstrap = ensure_packer()
 require("packer").startup(function(use)
 	use("wbthomason/packer.nvim")
 	use("ThePrimeagen/vim-be-good")
-	-- use {'RRethy/nvim-base16', config = 'vim.cmd [[colorscheme base16-nord]]'}
-	use({ "gruvbox-community/gruvbox", config = "vim.cmd [[colorscheme gruvbox]]" })
+	use({
+		"catppuccin/nvim",
+		config = function()
+			-- require('catppuccin').setup({transparent_background = false})
+			vim.cmd([[colorscheme catppuccin]])
+		end,
+	})
 	use({
 		"nvim-lualine/lualine.nvim",
 		requires = { "ryanoasis/vim-devicons" },
 		config = function()
 			require("lualine").setup({})
+		end,
+	})
+	use({
+		"nvim-treesitter/nvim-treesitter",
+		requires = { "windwp/nvim-ts-autotag" },
+		run = function()
+			local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
+			ts_update()
+		end,
+		config = function()
+			local treesitter = require("nvim-treesitter.configs")
+			treesitter.setup({
+				highlight = { enable = true },
+				indent = { enable = true },
+				autotag = { enable = true },
+				ensure_installed = { "json" },
+				auto_install = true,
+			})
 		end,
 	})
 	use({
@@ -102,6 +125,30 @@ require("packer").startup(function(use)
 			require("nvim-surround").setup()
 		end,
 	}) -- ys, ds, cs, visual S
+	use({
+		"windwp/nvim-autopairs",
+		config = function()
+			local npairs = require("nvim-autopairs")
+			local Rule = require("nvim-autopairs.rule")
+
+			npairs.setup({
+				check_ts = true,
+				ts_config = {
+					lua = { "string" }, -- it will not add a pair on that treesitter node
+					javascript = { "template_string" },
+					java = false, -- don't check treesitter on java
+				},
+			})
+
+			local ts_conds = require("nvim-autopairs.ts-conds")
+
+			-- press % => %% only while inside a comment or string
+			npairs.add_rules({
+				Rule("%", "%", "lua"):with_pair(ts_conds.is_ts_node({ "string", "comment" })),
+				Rule("$", "$", "lua"):with_pair(ts_conds.is_not_ts_node({ "function" })),
+			})
+		end,
+	})
 	use({
 		"rcarriga/nvim-dap-ui",
 		requires = { "mfussenegger/nvim-dap" },
@@ -166,29 +213,33 @@ require("packer").startup(function(use)
 		end,
 	})
 	use({
-		"hrsh7th/nvim-cmp",
+		"j-hui/fidget.nvim",
+		config = function()
+			require("fidget").setup()
+		end,
+	})
+	use({
+		"L3MON4D3/LuaSnip",
+		requires = { "rafamadriz/friendly-snippets" },
+		config = function()
+			require("luasnip.loaders.from_vscode").lazy_load()
+		end,
+	})
+	use({
+		"neovim/nvim-lspconfig",
 		requires = {
-			"hrsh7th/cmp-nvim-lsp",
-			"neovim/nvim-lspconfig",
-			"onsails/lspkind.nvim",
-			"j-hui/fidget.nvim",
 			"williamboman/mason.nvim",
 			"williamboman/mason-lspconfig.nvim",
-			"L3MON4D3/LuaSnip",
-			"saadparwaiz1/cmp_luasnip",
-			"rafamadriz/friendly-snippets",
 			"jose-elias-alvarez/null-ls.nvim",
 			"jayp0521/mason-null-ls.nvim",
 		},
+		-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+		-- https://github.com/williamboman/mason-lspconfig.nvim
 		config = function()
-			-- https://vonheikemen.github.io/devlog/tools/setup-nvim-lspconfig-plus-nvim-cmp/
-			-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-			-- https://github.com/williamboman/mason-lspconfig.nvim
 			local lspconfig = require("lspconfig")
 			local lsp_defaults = lspconfig.util.default_config
 			lsp_defaults.capabilities =
 				vim.tbl_deep_extend("force", lsp_defaults.capabilities, require("cmp_nvim_lsp").default_capabilities())
-
 			require("mason").setup({})
 			local mason_lspconfig = require("mason-lspconfig")
 			mason_lspconfig.setup({
@@ -223,28 +274,7 @@ require("packer").startup(function(use)
 					})
 				end,
 			})
-
 			local null_ls = require("null-ls")
-			local mason_null_ls = require("mason-null-ls")
-			mason_null_ls.setup({
-				ensure_installed = {
-					"autopep8",
-					"prettier",
-					"stylua",
-					"eslint_d",
-				},
-			})
-			mason_null_ls.setup_handlers({
-				-- default server handler (if dedicated is not defined)
-				function(source_name, methods)
-					require("mason-null-ls.automatic_setup")(source_name, methods)
-				end,
-				-- dedicated server handlers
-				-- autopep8 = function(source_name, methods)
-				-- 	null_ls.register(null_ls.builtins.formatting.autopep8)
-				-- end,
-			})
-
 			local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 			null_ls.setup({
 				on_attach = function(client, bufnr)
@@ -265,12 +295,38 @@ require("packer").startup(function(use)
 					end
 				end,
 			})
-
+			local mason_null_ls = require("mason-null-ls")
+			mason_null_ls.setup({
+				ensure_installed = {
+					"autopep8",
+					"prettier",
+					"eslint_d",
+					"stylua",
+				},
+			})
+			mason_null_ls.setup_handlers({
+				-- default server handler (if dedicated is not defined)
+				function(source_name, methods)
+					require("mason-null-ls.automatic_setup")(source_name, methods)
+				end,
+				-- dedicated server handlers
+				-- autopep8 = function(source_name, methods)
+				-- 	null_ls.register(null_ls.builtins.formatting.autopep8)
+				-- end,
+			})
+		end,
+	})
+	use({
+		"hrsh7th/nvim-cmp",
+		requires = {
+			"hrsh7th/cmp-nvim-lsp",
+			"saadparwaiz1/cmp_luasnip",
+			"onsails/lspkind.nvim",
+		},
+		config = function()
 			local cmp = require("cmp")
 			local lspkind = require("lspkind")
 			local luasnip = require("luasnip")
-			require("luasnip.loaders.from_vscode").lazy_load()
-			require("fidget").setup()
 
 			cmp.setup({
 				-- completion = { autocomplete = false },
@@ -314,6 +370,9 @@ require("packer").startup(function(use)
 					end, { "i", "s" }),
 				}),
 			})
+
+			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 			vim.o.completeopt = "menu,menuone,noselect"
 			vim.api.nvim_create_autocmd("LspAttach", {
