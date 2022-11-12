@@ -73,15 +73,11 @@ end
 local packer_bootstrap = ensure_packer()
 
 require("packer").startup(function(use)
-	use("wbthomason/packer.nvim")
-	use("ThePrimeagen/vim-be-good")
-	use({
-		"catppuccin/nvim",
-		config = function()
-			-- require('catppuccin').setup({transparent_background = false})
-			vim.cmd([[colorscheme catppuccin]])
-		end,
-	})
+	use({ "wbthomason/packer.nvim" })
+	use({ "ThePrimeagen/vim-be-good" })
+
+	-- Themes and visualization
+	use({ "catppuccin/nvim", config = "vim.cmd [[colorscheme catppuccin]]" })
 	use({
 		"nvim-lualine/lualine.nvim",
 		requires = { "ryanoasis/vim-devicons" },
@@ -90,8 +86,13 @@ require("packer").startup(function(use)
 		end,
 	})
 	use({
+		"lewis6991/gitsigns.nvim",
+		config = function()
+			require("gitsigns").setup()
+		end,
+	})
+	use({
 		"nvim-treesitter/nvim-treesitter",
-		requires = { "windwp/nvim-ts-autotag" },
 		run = function()
 			local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
 			ts_update()
@@ -102,51 +103,53 @@ require("packer").startup(function(use)
 				highlight = { enable = true },
 				indent = { enable = true },
 				autotag = { enable = true },
-				ensure_installed = { "json" },
+				ensure_installed = {
+					"bash",
+					"c_sharp",
+					"css",
+					"html",
+					"javascript",
+					"json",
+					"lua",
+					"make",
+					"markdown",
+					"prisma",
+					"python",
+					"rust",
+					"sql",
+					"toml",
+					"tsx",
+					"typescript",
+				},
 				auto_install = true,
 			})
 		end,
 	})
 	use({
-		"lewis6991/gitsigns.nvim",
+		"windwp/nvim-autopairs",
 		config = function()
-			require("gitsigns").setup()
+			require("nvim-autopairs").setup({ check_ts = true })
 		end,
 	})
+	use({ "windwp/nvim-ts-autotag", requires = { "nvim-treesitter" } })
 	use({
 		"numToStr/Comment.nvim",
 		config = function()
 			require("Comment").setup()
 		end,
-	}) -- gc
+	})
 	use({
 		"kylechui/nvim-surround",
 		config = function()
 			require("nvim-surround").setup()
 		end,
-	}) -- ys, ds, cs, visual S
+	})
+
+	-- LSP, DAP, linters and formatters
 	use({
-		"windwp/nvim-autopairs",
+		"j-hui/fidget.nvim",
 		config = function()
-			local npairs = require("nvim-autopairs")
-			local Rule = require("nvim-autopairs.rule")
-
-			npairs.setup({
-				check_ts = true,
-				ts_config = {
-					lua = { "string" }, -- it will not add a pair on that treesitter node
-					javascript = { "template_string" },
-					java = false, -- don't check treesitter on java
-				},
-			})
-
-			local ts_conds = require("nvim-autopairs.ts-conds")
-
-			-- press % => %% only while inside a comment or string
-			npairs.add_rules({
-				Rule("%", "%", "lua"):with_pair(ts_conds.is_ts_node({ "string", "comment" })),
-				Rule("$", "$", "lua"):with_pair(ts_conds.is_not_ts_node({ "function" })),
-			})
+			require("fidget").setup()
 		end,
 	})
 	use({
@@ -157,68 +160,6 @@ require("packer").startup(function(use)
 		end,
 	})
 	use({
-		"kristijanhusak/vim-dadbod-ui",
-		requires = { "tpope/vim-dadbod" },
-		config = function()
-			vim.g.db_ui_save_location = vim.fn.stdpath("data") .. "/db_ui/"
-			vim.keymap.set("n", "<leader>du", ":DBUIToggle<CR>")
-			vim.keymap.set("n", "<leader>df", ":DBUIFindBuffer<CR>")
-			vim.keymap.set("n", "<leader>dr", ":DBUIRenameBuffer<CR>")
-			vim.keymap.set("n", "<leader>dl", ":DBUILastQueryInfo<CR>")
-		end,
-	})
-	use({
-		"nvim-telescope/telescope.nvim",
-		requires = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope-file-browser.nvim" },
-		config = function()
-			local telescope = require("telescope")
-			local actions = require("telescope.actions")
-			telescope.load_extension("file_browser")
-			telescope.setup({
-				defaults = {
-					mappings = {
-						i = {
-							["<C-k>"] = actions.move_selection_previous,
-							["<C-j>"] = actions.move_selection_next,
-						},
-					},
-				},
-				pickers = {
-					buffers = {
-						mappings = {
-							n = {
-								["dd"] = actions.delete_buffer,
-							},
-						},
-					},
-				},
-				extensions = {
-					file_browser = {
-						sorting_strategy = "ascending",
-						grouped = true,
-						hidden = true,
-					},
-				},
-			})
-			-- https://github.com/BurntSushi/ripgrep is required for live_grep
-			vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>")
-			vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>")
-			vim.keymap.set("n", "<leader>fb", ":Telescope buffers<CR>")
-			vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<CR>")
-			vim.keymap.set("n", "<leader>fe", ":Telescope file_browser<CR>")
-			vim.keymap.set("n", "<leader>gc", ":Telescope git_commits<CR>")
-			vim.keymap.set("n", "<leader>gfc", ":Telescope git_bcommits<CR>")
-			vim.keymap.set("n", "<leader>gb", ":Telescope git_branches<CR>")
-			vim.keymap.set("n", "<leader>gs", ":Telescope git_status<CR>")
-		end,
-	})
-	use({
-		"j-hui/fidget.nvim",
-		config = function()
-			require("fidget").setup()
-		end,
-	})
-	use({
 		"L3MON4D3/LuaSnip",
 		requires = { "rafamadriz/friendly-snippets" },
 		config = function()
@@ -226,21 +167,20 @@ require("packer").startup(function(use)
 		end,
 	})
 	use({
-		"neovim/nvim-lspconfig",
+		"williamboman/mason.nvim",
 		requires = {
-			"williamboman/mason.nvim",
+			"neovim/nvim-lspconfig",
 			"williamboman/mason-lspconfig.nvim",
 			"jose-elias-alvarez/null-ls.nvim",
 			"jayp0521/mason-null-ls.nvim",
 		},
-		-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-		-- https://github.com/williamboman/mason-lspconfig.nvim
 		config = function()
+			require("mason").setup({})
 			local lspconfig = require("lspconfig")
 			local lsp_defaults = lspconfig.util.default_config
 			lsp_defaults.capabilities =
 				vim.tbl_deep_extend("force", lsp_defaults.capabilities, require("cmp_nvim_lsp").default_capabilities())
-			require("mason").setup({})
+
 			local mason_lspconfig = require("mason-lspconfig")
 			mason_lspconfig.setup({
 				ensure_installed = {
@@ -274,6 +214,7 @@ require("packer").startup(function(use)
 					})
 				end,
 			})
+
 			local null_ls = require("null-ls")
 			local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 			null_ls.setup({
@@ -325,8 +266,8 @@ require("packer").startup(function(use)
 		},
 		config = function()
 			local cmp = require("cmp")
-			local lspkind = require("lspkind")
 			local luasnip = require("luasnip")
+			local lspkind = require("lspkind")
 
 			cmp.setup({
 				-- completion = { autocomplete = false },
@@ -396,6 +337,64 @@ require("packer").startup(function(use)
 					bufmap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<cr>") -- Move to the next diagnostic
 				end,
 			})
+		end,
+	})
+
+	-- Tools
+	use({
+		"nvim-telescope/telescope.nvim",
+		requires = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope-file-browser.nvim" },
+		config = function()
+			local telescope = require("telescope")
+			local actions = require("telescope.actions")
+			telescope.load_extension("file_browser")
+			telescope.setup({
+				defaults = {
+					mappings = {
+						i = {
+							["<C-k>"] = actions.move_selection_previous,
+							["<C-j>"] = actions.move_selection_next,
+						},
+					},
+				},
+				pickers = {
+					buffers = {
+						mappings = {
+							n = {
+								["dd"] = actions.delete_buffer,
+							},
+						},
+					},
+				},
+				extensions = {
+					file_browser = {
+						sorting_strategy = "ascending",
+						grouped = true,
+						hidden = true,
+					},
+				},
+			})
+			-- https://github.com/BurntSushi/ripgrep is required for live_grep
+			vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>")
+			vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>")
+			vim.keymap.set("n", "<leader>fb", ":Telescope buffers<CR>")
+			vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<CR>")
+			vim.keymap.set("n", "<leader>fe", ":Telescope file_browser<CR>")
+			vim.keymap.set("n", "<leader>gc", ":Telescope git_commits<CR>")
+			vim.keymap.set("n", "<leader>gfc", ":Telescope git_bcommits<CR>")
+			vim.keymap.set("n", "<leader>gb", ":Telescope git_branches<CR>")
+			vim.keymap.set("n", "<leader>gs", ":Telescope git_status<CR>")
+		end,
+	})
+	use({
+		"kristijanhusak/vim-dadbod-ui",
+		requires = { "tpope/vim-dadbod" },
+		config = function()
+			vim.g.db_ui_save_location = vim.fn.stdpath("data") .. "/db_ui/"
+			vim.keymap.set("n", "<leader>du", ":DBUIToggle<CR>")
+			vim.keymap.set("n", "<leader>df", ":DBUIFindBuffer<CR>")
+			vim.keymap.set("n", "<leader>dr", ":DBUIRenameBuffer<CR>")
+			vim.keymap.set("n", "<leader>dl", ":DBUILastQueryInfo<CR>")
 		end,
 	})
 
