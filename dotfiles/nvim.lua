@@ -153,13 +153,6 @@ require("packer").startup(function(use)
 		end,
 	})
 	use({
-		"rcarriga/nvim-dap-ui",
-		requires = { "mfussenegger/nvim-dap" },
-		config = function()
-			require("dapui").setup()
-		end,
-	})
-	use({
 		"L3MON4D3/LuaSnip",
 		requires = { "rafamadriz/friendly-snippets" },
 		config = function()
@@ -338,6 +331,16 @@ require("packer").startup(function(use)
 				end,
 			})
 		end,
+	})
+
+	-- Debugging
+	use({
+		"rcarriga/nvim-dap-ui",
+		requires = { "mfussenegger/nvim-dap" },
+		config = function()
+			require("dapui").setup()
+		end,
+		enable = false,
 	})
 
 	-- Tools
