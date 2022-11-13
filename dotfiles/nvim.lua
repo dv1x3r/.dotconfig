@@ -44,10 +44,10 @@ map("n", "<C-u>", "<C-u>zz")
 map("i", "<C-e>", "<ESC>A")
 map("i", "<C-a>", "<ESC>I")
 
-map("n", "<C-h>", "<C-w>h") -- focus window on the left
-map("n", "<C-j>", "<C-w>j") -- focus window on the bottom
-map("n", "<C-k>", "<C-w>k") -- focus window on the top
-map("n", "<C-l>", "<C-w>l") -- focus window on the right
+-- map("n", "<C-h>", "<C-w>h") -- focus window on the left
+-- map("n", "<C-j>", "<C-w>j") -- focus window on the bottom
+-- map("n", "<C-k>", "<C-w>k") -- focus window on the top
+-- map("n", "<C-l>", "<C-w>l") -- focus window on the right
 
 map("n", "<leader>sv", "<C-w>v") -- split window vertically
 map("n", "<leader>sh", "<C-w>s") -- split window horizontally
@@ -75,6 +75,7 @@ local packer_bootstrap = ensure_packer()
 require("packer").startup(function(use)
 	use({ "wbthomason/packer.nvim" })
 	use({ "ThePrimeagen/vim-be-good" })
+	use({ "christoomey/vim-tmux-navigator" })
 
 	-- Themes and visualization
 	use({ "catppuccin/nvim", config = "vim.cmd [[colorscheme catppuccin]]" })
@@ -82,7 +83,7 @@ require("packer").startup(function(use)
 		"nvim-lualine/lualine.nvim",
 		requires = { "ryanoasis/vim-devicons" },
 		config = function()
-			require("lualine").setup({})
+			require("lualine").setup({ options = { globalstatus = true } })
 		end,
 	})
 	use({
@@ -321,7 +322,7 @@ require("packer").startup(function(use)
 					bufmap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>") -- Lists all the implementations for the symbol under the cursor
 					bufmap("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>") -- Jumps to the definition of the type symbol
 					bufmap("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>") -- Lists all the references
-					bufmap("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<cr>") -- Displays a function's signature information
+					bufmap("n", "ghs", "<cmd>lua vim.lsp.buf.signature_help()<cr>") -- Displays a function's signature information
 					bufmap("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>") -- Renames all references to the symbol under the cursor
 					bufmap("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>") -- Selects a code action available at the current cursor position
 					bufmap("x", "<F4>", "<cmd>lua vim.lsp.buf.range_code_action()<cr>") -- Selects a code action available at the current cursor position
@@ -379,8 +380,8 @@ require("packer").startup(function(use)
 			})
 			-- https://github.com/BurntSushi/ripgrep is required for live_grep
 			vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>")
-			vim.keymap.set("n", "<leader>fs", ":Telescope current_buffer_fuzzy_find<CR>")
 			vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>")
+			vim.keymap.set("n", "<leader>fs", ":Telescope current_buffer_fuzzy_find<CR>")
 			vim.keymap.set("n", "<leader>fb", ":Telescope buffers<CR>")
 			vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<CR>")
 			vim.keymap.set("n", "<leader>fe", ":Telescope file_browser<CR>")
