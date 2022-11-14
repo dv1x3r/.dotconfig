@@ -351,7 +351,6 @@ require("packer").startup(function(use)
 		config = function()
 			local telescope = require("telescope")
 			local actions = require("telescope.actions")
-			telescope.load_extension("file_browser")
 			telescope.setup({
 				defaults = {
 					mappings = {
@@ -378,6 +377,7 @@ require("packer").startup(function(use)
 					},
 				},
 			})
+			telescope.load_extension("file_browser")
 			-- https://github.com/BurntSushi/ripgrep is required for live_grep
 			vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>")
 			vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>")
