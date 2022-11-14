@@ -371,7 +371,7 @@ require("packer").startup(function(use)
 				},
 				extensions = {
 					file_browser = {
-						sorting_strategy = "ascending",
+						-- sorting_strategy = "ascending",
 						grouped = true,
 						hidden = true,
 					},
