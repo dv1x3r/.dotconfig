@@ -83,7 +83,9 @@ require("packer").startup(function(use)
 		"nvim-lualine/lualine.nvim",
 		requires = { "ryanoasis/vim-devicons" },
 		config = function()
-			require("lualine").setup({ options = { globalstatus = true } })
+			require("lualine").setup({
+				-- options = { globalstatus = true }
+			})
 		end,
 	})
 	use({
