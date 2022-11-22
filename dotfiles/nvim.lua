@@ -76,9 +76,9 @@ require("packer").startup(function(use)
 	use({ "wbthomason/packer.nvim" })
 	use({ "ThePrimeagen/vim-be-good" })
 	use({ "christoomey/vim-tmux-navigator" })
-
-	-- Themes and visualization
 	use({ "catppuccin/nvim", config = "vim.cmd [[colorscheme catppuccin]]" })
+
+	-- Visualization
 	use({
 		"nvim-lualine/lualine.nvim",
 		requires = { "ryanoasis/vim-devicons" },
@@ -104,14 +104,32 @@ require("packer").startup(function(use)
 		end,
 	})
 	use({
+		"numToStr/Comment.nvim",
+		config = function()
+			require("Comment").setup()
+		end,
+	})
+	use({
+		"kylechui/nvim-surround",
+		config = function()
+			require("nvim-surround").setup()
+		end,
+	})
+	use({
+		"windwp/nvim-autopairs",
+		config = function()
+			require("nvim-autopairs").setup({ check_ts = true })
+		end,
+	})
+	use({ "windwp/nvim-ts-autotag", after = { "nvim-treesitter" } })
+	use({
 		"nvim-treesitter/nvim-treesitter",
 		run = function()
 			local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
 			ts_update()
 		end,
 		config = function()
-			local treesitter = require("nvim-treesitter.configs")
-			treesitter.setup({
+			require("nvim-treesitter.configs").setup({
 				highlight = { enable = true },
 				indent = { enable = true },
 				autotag = { enable = true },
@@ -135,25 +153,6 @@ require("packer").startup(function(use)
 				},
 				auto_install = true,
 			})
-		end,
-	})
-	use({
-		"windwp/nvim-autopairs",
-		config = function()
-			require("nvim-autopairs").setup({ check_ts = true })
-		end,
-	})
-	use({ "windwp/nvim-ts-autotag", requires = { "nvim-treesitter" } })
-	use({
-		"numToStr/Comment.nvim",
-		config = function()
-			require("Comment").setup()
-		end,
-	})
-	use({
-		"kylechui/nvim-surround",
-		config = function()
-			require("nvim-surround").setup()
 		end,
 	})
 
@@ -402,6 +401,8 @@ require("packer").startup(function(use)
 			vim.keymap.set("n", "<leader>gs", ":Telescope git_status<CR>")
 		end,
 	})
+
+	-- Databases
 	use({
 		"kristijanhusak/vim-dadbod-ui",
 		requires = { "tpope/vim-dadbod" },
