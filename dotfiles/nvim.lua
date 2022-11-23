@@ -44,11 +44,6 @@ map("n", "<C-u>", "<C-u>zz")
 map("i", "<C-e>", "<ESC>A")
 map("i", "<C-a>", "<ESC>I")
 
--- map("n", "<C-h>", "<C-w>h") -- focus window on the left
--- map("n", "<C-j>", "<C-w>j") -- focus window on the bottom
--- map("n", "<C-k>", "<C-w>k") -- focus window on the top
--- map("n", "<C-l>", "<C-w>l") -- focus window on the right
-
 map("n", "<leader>sv", "<C-w>v") -- split window vertically
 map("n", "<leader>sh", "<C-w>s") -- split window horizontally
 map("n", "<leader>se", "<C-w>=") -- make split windows equal width & height
@@ -267,6 +262,7 @@ require("packer").startup(function(use)
 			"hrsh7th/cmp-nvim-lsp",
 			"saadparwaiz1/cmp_luasnip",
 			"onsails/lspkind.nvim",
+			"windwp/nvim-autopairs",
 		},
 		config = function()
 			local cmp = require("cmp")
@@ -277,6 +273,7 @@ require("packer").startup(function(use)
 				-- completion = { autocomplete = false },
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
+					{ name = "vim-dadbod-completion" },
 					{ name = "luasnip", keyword_length = 2 },
 				}),
 				snippet = {
@@ -413,6 +410,10 @@ require("packer").startup(function(use)
 			vim.keymap.set("n", "<leader>dr", ":DBUIRenameBuffer<CR>")
 			vim.keymap.set("n", "<leader>dl", ":DBUILastQueryInfo<CR>")
 		end,
+	})
+	use({
+		"kristijanhusak/vim-dadbod-completion",
+		requires = { "tpope/vim-dadbod" },
 	})
 
 	if packer_bootstrap then
