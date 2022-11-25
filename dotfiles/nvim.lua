@@ -19,6 +19,7 @@ vim.o.undofile = true
 vim.o.undodir = vim.fn.stdpath("data") .. "/undodir/"
 
 vim.o.scrolloff = 10 -- number of lines to keep visible
+vim.o.sidescrolloff = 20 -- number of symbols to keep visible
 vim.o.tabstop = 4 -- number of shown spaces per tab
 vim.o.softtabstop = 4 -- number of pasted spaces for tab
 vim.o.shiftwidth = 4 -- number of pasted spaces for >>
@@ -54,6 +55,8 @@ map("n", "<leader>to", ":tabnew<CR>") -- open new tab
 map("n", "<leader>tx", ":tabclose<CR>") -- close current tab
 map("n", "<leader>tn", ":tabn<CR>") --  go to next tab
 map("n", "<leader>tp", ":tabp<CR>") --  go to previous tab
+
+vim.cmd(":command! config e ~/.config/nvim/init.lua")
 
 local function ensure_packer()
 	local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
@@ -413,6 +416,7 @@ require("packer").startup(function(use)
 	})
 	use({
 		"kristijanhusak/vim-dadbod-completion",
+		commit = "01c4f7a66786095c6f00f877c616eaf34c425a06",
 		requires = { "tpope/vim-dadbod" },
 	})
 
