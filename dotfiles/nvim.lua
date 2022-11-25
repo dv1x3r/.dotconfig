@@ -56,7 +56,7 @@ map("n", "<leader>tx", ":tabclose<CR>") -- close current tab
 map("n", "<leader>tn", ":tabn<CR>") --  go to next tab
 map("n", "<leader>tp", ":tabp<CR>") --  go to previous tab
 
-vim.cmd(":command! config e ~/.config/nvim/init.lua")
+vim.cmd(":command! Config e ~/.config/nvim/init.lua")
 
 local function ensure_packer()
 	local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
