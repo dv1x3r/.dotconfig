@@ -56,6 +56,10 @@ map("n", "<leader>tx", ":tabclose<CR>") -- close current tab
 map("n", "<leader>tn", ":tabn<CR>") --  go to next tab
 map("n", "<leader>tp", ":tabp<CR>") --  go to previous tab
 
+map("n", "<leader>bx", ":bd!<CR>") -- force close current buffer
+map("n", "<leader>bn", ":bnext<CR>") -- go to next buffer
+map("n", "<leader>bp", ":bprevious<CR>") -- go to previous buffer
+
 vim.cmd(":command! Config e ~/.config/nvim/init.lua")
 
 local function ensure_packer()
@@ -82,13 +86,16 @@ require("packer").startup(function(use)
 		requires = { "ryanoasis/vim-devicons" },
 		config = function()
 			require("lualine").setup({
-				-- options = { globalstatus = true },
+				options = { globalstatus = true },
 				sections = {
 					lualine_c = {
 						{
 							"filename",
 							file_status = true, -- displays file status (readonly status, modified status)
 							path = 1, -- 0 = just filename, 1 = relative path, 2 = absolute path
+						},
+						{
+							"buffers",
 						},
 					},
 				},
