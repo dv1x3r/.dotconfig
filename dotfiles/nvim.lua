@@ -27,7 +27,10 @@ vim.o.expandtab = true -- replace tab with spaces
 vim.o.wrap = false -- wrap to the next line
 
 local function map(m, k, v, opts)
-	opts = opts or { noremap = true }
+	opts = opts or {
+			noremap = true,
+			-- silent = true,
+		}
 	vim.keymap.set(m, k, v, opts)
 end
 
@@ -60,7 +63,8 @@ map("n", "<leader>bx", ":bd!<CR>") -- force close current buffer
 map("n", "<leader>bn", ":bnext<CR>") -- go to next buffer
 map("n", "<leader>bp", ":bprevious<CR>") -- go to previous buffer
 
-vim.cmd(":command! Config e ~/.config/nvim/init.lua")
+map("n", "<leader>vc", ":e ~/.config/nvim/init.lua <CR>")
+-- vim.cmd(":command! Config e ~/.config/nvim/init.lua")
 
 local function ensure_packer()
 	local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
