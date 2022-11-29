@@ -254,6 +254,7 @@ require("packer").startup(function(use)
 				ensure_installed = {
 					"autopep8",
 					"prettier",
+					"djlint",
 					"eslint_d",
 					"stylua",
 				},
@@ -264,9 +265,12 @@ require("packer").startup(function(use)
 					require("mason-null-ls.automatic_setup")(source_name, methods)
 				end,
 				-- dedicated server handlers
-				-- autopep8 = function(source_name, methods)
-				-- 	null_ls.register(null_ls.builtins.formatting.autopep8)
+				-- prettier = function(source_name, methods)
+				-- 	null_ls.register(null_ls.builtins.formatting.prettier.with({ disabled_filetypes = { "html" } }))
 				-- end,
+				djlint = function(source_name, methods)
+					null_ls.register(null_ls.builtins.formatting.djlint.with({ extra_filetypes = { "html" } }))
+				end,
 			})
 		end,
 	})
