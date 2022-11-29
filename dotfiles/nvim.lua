@@ -265,9 +265,9 @@ require("packer").startup(function(use)
 					require("mason-null-ls.automatic_setup")(source_name, methods)
 				end,
 				-- dedicated server handlers
-				-- prettier = function(source_name, methods)
-				-- 	null_ls.register(null_ls.builtins.formatting.prettier.with({ disabled_filetypes = { "html" } }))
-				-- end,
+				prettier = function(source_name, methods)
+					null_ls.register(null_ls.builtins.formatting.prettier.with({ disabled_filetypes = { "html" } }))
+				end,
 				djlint = function(source_name, methods)
 					null_ls.register(null_ls.builtins.formatting.djlint.with({ extra_filetypes = { "html" } }))
 				end,
