@@ -143,9 +143,6 @@ require("packer").startup(function(use)
 		"nvim-lualine/lualine.nvim",
 		requires = { "ryanoasis/vim-devicons" },
 		config = function()
-			local function maximize_status()
-				return vim.t.maximized and " " or ""
-			end
 			require("lualine").setup({
 				options = { globalstatus = true },
 				sections = {
@@ -155,12 +152,20 @@ require("packer").startup(function(use)
 							file_status = true, -- displays file status (readonly status, modified status)
 							path = 1, -- 0 = just filename, 1 = relative path, 2 = absolute path
 						},
-						{ maximize_status },
 						-- {
 						-- 	"buffers",
 						-- },
 					},
 				},
+			})
+		end,
+	})
+	use({
+		"lukas-reineke/indent-blankline.nvim",
+		config = function()
+			require("indent_blankline").setup({
+				-- show_current_context = true,
+				-- show_current_context_start = true,
 			})
 		end,
 	})
@@ -242,6 +247,16 @@ require("packer").startup(function(use)
 	})
 
 	-- Debugging
+	use({
+		"michaelb/sniprun",
+		run = "bash ./install.sh",
+		config = function()
+			vim.keymap.set("n", "<leader>ex", ":SnipClose<CR>")
+			vim.keymap.set("n", "<leader>er", ":SnipReset<CR>")
+			vim.keymap.set("n", "<leader>ee", ":SnipRun<CR>")
+			vim.keymap.set("v", "<leader>ee", ":SnipRun<CR>")
+		end,
+	})
 	use({
 		"rcarriga/nvim-dap-ui",
 		requires = { "mfussenegger/nvim-dap" },
