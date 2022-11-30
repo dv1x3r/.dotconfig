@@ -379,6 +379,7 @@ require("packer").startup(function(use)
 		"hrsh7th/nvim-cmp",
 		requires = {
 			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-nvim-lsp-signature-help",
 			"saadparwaiz1/cmp_luasnip",
 			"onsails/lspkind.nvim",
 			"windwp/nvim-autopairs",
@@ -392,6 +393,7 @@ require("packer").startup(function(use)
 				-- completion = { autocomplete = false },
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
+					{ name = "nvim_lsp_signature_help" },
 					{ name = "vim-dadbod-completion" },
 					{ name = "luasnip", keyword_length = 2 },
 				}),
