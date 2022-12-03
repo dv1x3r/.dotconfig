@@ -242,7 +242,7 @@ require("packer").startup(function(use)
 	})
 	use({
 		"kristijanhusak/vim-dadbod-completion",
-		commit = "01c4f7a66786095c6f00f877c616eaf34c425a06",
+		-- commit = "01c4f7a66786095c6f00f877c616eaf34c425a06",
 		requires = { "tpope/vim-dadbod" },
 	})
 
