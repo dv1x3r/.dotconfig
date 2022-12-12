@@ -1,0 +1,29 @@
+theme = "catppuccin_mocha"
+
+[editor]
+line-number = "relative"
+bufferline = "always"
+cursorline = true
+true-color = true
+
+[editor.statusline]
+left = ["mode", "spinner", "file-name"]
+right = ["diagnostics", "selections", "position", "file-encoding", "file-type"]
+
+[editor.cursor-shape]
+insert = "bar"
+
+[editor.indent-guides]
+render = true
+
+[keys.normal]
+G = "goto_file_end"
+X = "extend_line_above"
+ret = ["move_line_down", "goto_line_end"]
+C-d = ["half_page_down", "align_view_center"]
+C-u = ["half_page_up", "align_view_center"]
+
+[keys.normal.space]
+q = ":quit"
+w = ":write"
+x = ":bc"
