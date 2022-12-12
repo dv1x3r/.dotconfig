@@ -20,8 +20,8 @@ render = true
 G = "goto_file_end"
 X = "extend_line_above"
 ret = ["move_line_down", "goto_line_end"]
-C-d = ["half_page_down", "align_view_center"]
-C-u = ["half_page_up", "align_view_center"]
+C-d = ["half_page_down", "goto_window_center"]
+C-u = ["half_page_up", "goto_window_center"]
 
 [keys.normal.space]
 q = ":quit"
