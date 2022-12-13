@@ -64,7 +64,6 @@ map("n", "<leader>bn", ":bnext<CR>") -- go to next buffer
 map("n", "<leader>bp", ":bprevious<CR>") -- go to previous buffer
 
 map("n", "<leader>vc", ":e ~/.config/nvim/init.lua <CR>")
--- vim.cmd(":command! Config e ~/.config/nvim/init.lua")
 
 local function ensure_packer()
 	local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
@@ -78,12 +77,28 @@ end
 
 local packer_bootstrap = ensure_packer()
 
+-- Automatically source and re-compile packer whenever you save this init.lua
+local packer_group = vim.api.nvim_create_augroup("Packer", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePost", {
+	command = "source <afile> | PackerCompile",
+	group = packer_group,
+	pattern = vim.fn.expand("$MYVIMRC"),
+})
+
+-- Highlight on yank
+local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
+vim.api.nvim_create_autocmd("TextYankPost", {
+	callback = function()
+		vim.highlight.on_yank()
+	end,
+	group = highlight_group,
+	pattern = "*",
+})
+
 require("packer").startup(function(use)
 	use({ "wbthomason/packer.nvim" })
 	use({ "ThePrimeagen/vim-be-good" })
 	use({ "catppuccin/nvim", config = "vim.cmd [[colorscheme catppuccin]]" })
-
-	-- Navigation
 	use({ "christoomey/vim-tmux-navigator" })
 	use({
 		"szw/vim-maximizer",
@@ -106,15 +121,6 @@ require("packer").startup(function(use)
 						},
 					},
 				},
-				pickers = {
-					buffers = {
-						mappings = {
-							n = {
-								["dd"] = actions.delete_buffer,
-							},
-						},
-					},
-				},
 				extensions = {
 					file_browser = {
 						-- sorting_strategy = "ascending",
@@ -128,17 +134,27 @@ require("packer").startup(function(use)
 			vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>")
 			vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>")
 			vim.keymap.set("n", "<leader>fs", ":Telescope current_buffer_fuzzy_find<CR>")
+			vim.keymap.set("n", "<leader>fw", ":Telescope grep_string<CR>")
 			vim.keymap.set("n", "<leader>fb", ":Telescope buffers<CR>")
-			vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<CR>")
+			vim.keymap.set("n", "<leader>fd", ":Telescope diagnostics<CR>")
 			vim.keymap.set("n", "<leader>fe", ":Telescope file_browser<CR>")
 			vim.keymap.set("n", "<leader>gc", ":Telescope git_commits<CR>")
-			vim.keymap.set("n", "<leader>gfc", ":Telescope git_bcommits<CR>")
-			vim.keymap.set("n", "<leader>gb", ":Telescope git_branches<CR>")
+			vim.keymap.set("n", "<leader>gbc", ":Telescope git_bcommits<CR>")
+			vim.keymap.set("n", "<leader>gbr", ":Telescope git_branches<CR>")
 			vim.keymap.set("n", "<leader>gs", ":Telescope git_status<CR>")
 		end,
 	})
-
-	-- Visualization
+	use({
+		"tpope/vim-dadbod",
+		requires = { "kristijanhusak/vim-dadbod-ui", "kristijanhusak/vim-dadbod-completion" },
+		config = function()
+			vim.g.db_ui_save_location = vim.fn.stdpath("data") .. "/db_ui/"
+			vim.keymap.set("n", "<leader>du", ":DBUIToggle<CR>")
+			vim.keymap.set("n", "<leader>df", ":DBUIFindBuffer<CR>")
+			vim.keymap.set("n", "<leader>dr", ":DBUIRenameBuffer<CR>")
+			vim.keymap.set("n", "<leader>dl", ":DBUILastQueryInfo<CR>")
+		end,
+	})
 	use({
 		"nvim-lualine/lualine.nvim",
 		requires = { "ryanoasis/vim-devicons" },
@@ -152,10 +168,25 @@ require("packer").startup(function(use)
 							file_status = true, -- displays file status (readonly status, modified status)
 							path = 1, -- 0 = just filename, 1 = relative path, 2 = absolute path
 						},
-						-- {
-						-- 	"buffers",
-						-- },
+						{
+							"buffers",
+						},
 					},
+				},
+			})
+		end,
+	})
+	use("tpope/vim-fugitive")
+	use({
+		"lewis6991/gitsigns.nvim",
+		config = function()
+			require("gitsigns").setup({
+				signs = {
+					add = { text = "+" },
+					change = { text = "~" },
+					delete = { text = "_" },
+					topdelete = { text = "‾" },
+					changedelete = { text = "~" },
 				},
 			})
 		end,
@@ -163,16 +194,7 @@ require("packer").startup(function(use)
 	use({
 		"lukas-reineke/indent-blankline.nvim",
 		config = function()
-			require("indent_blankline").setup({
-				-- show_current_context = true,
-				-- show_current_context_start = true,
-			})
-		end,
-	})
-	use({
-		"lewis6991/gitsigns.nvim",
-		config = function()
-			require("gitsigns").setup()
+			require("indent_blankline").setup({})
 		end,
 	})
 	use({
@@ -205,129 +227,72 @@ require("packer").startup(function(use)
 				highlight = { enable = true },
 				indent = { enable = true },
 				autotag = { enable = true },
-				ensure_installed = {
-					"bash",
-					"c_sharp",
-					"css",
-					"html",
-					"javascript",
-					"json",
-					"lua",
-					"make",
-					"markdown",
-					"prisma",
-					"python",
-					"rust",
-					"sql",
-					"toml",
-					"tsx",
-					"typescript",
-				},
 				auto_install = true,
+				ensure_installed = "all",
 			})
 		end,
 	})
 
-	-- Databases
+	-- LSP, DAP, Formatters and Linters
 	use({
-		"kristijanhusak/vim-dadbod-ui",
-		requires = { "tpope/vim-dadbod" },
-		config = function()
-			vim.g.db_ui_save_location = vim.fn.stdpath("data") .. "/db_ui/"
-			vim.keymap.set("n", "<leader>du", ":DBUIToggle<CR>")
-			vim.keymap.set("n", "<leader>df", ":DBUIFindBuffer<CR>")
-			vim.keymap.set("n", "<leader>dr", ":DBUIRenameBuffer<CR>")
-			vim.keymap.set("n", "<leader>dl", ":DBUILastQueryInfo<CR>")
-		end,
-	})
-	use({
-		"kristijanhusak/vim-dadbod-completion",
-		-- commit = "01c4f7a66786095c6f00f877c616eaf34c425a06",
-		requires = { "tpope/vim-dadbod" },
-	})
-
-	-- Debugging
-	use({
-		"michaelb/sniprun",
-		run = "bash ./install.sh",
-		config = function()
-			vim.keymap.set("n", "<leader>ex", ":SnipClose<CR>")
-			vim.keymap.set("n", "<leader>er", ":SnipReset<CR>")
-			vim.keymap.set("n", "<leader>ee", ":SnipRun<CR>")
-			vim.keymap.set("v", "<leader>ee", ":SnipRun<CR>")
-		end,
-	})
-	use({
-		"rcarriga/nvim-dap-ui",
-		requires = { "mfussenegger/nvim-dap" },
-		config = function()
-			require("dapui").setup()
-		end,
-		enable = false,
-	})
-
-	-- LSP, DAP, linters and formatters
-	use({
-		"j-hui/fidget.nvim",
-		config = function()
-			require("fidget").setup()
-		end,
-	})
-	use({
-		"L3MON4D3/LuaSnip",
-		requires = { "rafamadriz/friendly-snippets" },
-		config = function()
-			require("luasnip.loaders.from_vscode").lazy_load()
-		end,
-	})
-	use({
-		"williamboman/mason.nvim",
+		"VonHeikemen/lsp-zero.nvim",
 		requires = {
-			"neovim/nvim-lspconfig",
-			"williamboman/mason-lspconfig.nvim",
-			"jose-elias-alvarez/null-ls.nvim",
-			"jayp0521/mason-null-ls.nvim",
+			-- LSP Support
+			{ "neovim/nvim-lspconfig" },
+			{ "williamboman/mason.nvim" },
+			{ "williamboman/mason-lspconfig.nvim" },
+
+			-- Autocompletion
+			{ "hrsh7th/nvim-cmp" },
+			{ "hrsh7th/cmp-buffer" },
+			{ "hrsh7th/cmp-path" },
+			{ "hrsh7th/cmp-nvim-lsp-signature-help" },
+			{ "saadparwaiz1/cmp_luasnip" },
+			{ "hrsh7th/cmp-nvim-lsp" },
+			{ "hrsh7th/cmp-nvim-lua" },
+
+			-- Snippets
+			{ "L3MON4D3/LuaSnip" },
+			{ "rafamadriz/friendly-snippets" },
+
+			-- Useful status updates for LSP
+			{ "j-hui/fidget.nvim" },
+			{ "onsails/lspkind.nvim" },
+
+			-- Formatters and Linters
+			{ "jose-elias-alvarez/null-ls.nvim" },
+			{ "jayp0521/mason-null-ls.nvim" },
 		},
 		config = function()
-			require("mason").setup({})
-			local lspconfig = require("lspconfig")
-			local lsp_defaults = lspconfig.util.default_config
-			lsp_defaults.capabilities =
-				vim.tbl_deep_extend("force", lsp_defaults.capabilities, require("cmp_nvim_lsp").default_capabilities())
-
-			local mason_lspconfig = require("mason-lspconfig")
-			mason_lspconfig.setup({
-				ensure_installed = {
-					"pyright",
-					"rust_analyzer",
-					"sumneko_lua",
-					"tsserver",
-					"html",
-					"cssls",
+			require("fidget").setup()
+			local lspkind = require("lspkind")
+			local lsp = require("lsp-zero")
+			lsp.preset("recommended")
+			lsp.nvim_workspace()
+			lsp.ensure_installed({
+				"tsserver",
+				"eslint",
+				"sumneko_lua",
+				"pyright",
+				"html",
+				"cssls",
+			})
+			lsp.setup_nvim_cmp({
+				sources = {
+					{ name = "nvim_lsp" },
+					{ name = "nvim_lsp_signature_help" },
+					{ name = "luasnip", keyword_length = 2 },
+					{ name = "vim-dadbod-completion" },
+				},
+				formatting = {
+					format = lspkind.cmp_format({ maxwidth = 50, ellipsis_char = "..." }),
 				},
 			})
-			mason_lspconfig.setup_handlers({
-				-- default server handler (if dedicated is not defined)
-				function(server)
-					lspconfig[server].setup({})
-				end,
-				-- dedicated server handlers
-				sumneko_lua = function(_)
-					require("lspconfig").sumneko_lua.setup({
-						settings = {
-							Lua = {
-								runtime = { version = "LuaJIT" },
-								diagnostics = { globals = { "vim" } },
-								workspace = {
-									library = vim.api.nvim_get_runtime_file("", true),
-									checkThirdParty = false,
-								},
-								telemetry = { enable = false },
-							},
-						},
-					})
-				end,
-			})
+			lsp.setup()
+
+			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+			local cmp = require("cmp")
+			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 			local null_ls = require("null-ls")
 			local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
@@ -353,9 +318,8 @@ require("packer").startup(function(use)
 			local mason_null_ls = require("mason-null-ls")
 			mason_null_ls.setup({
 				ensure_installed = {
-					"autopep8",
+					"black",
 					"prettier",
-					"djlint",
 					"eslint_d",
 					"stylua",
 				},
@@ -364,99 +328,6 @@ require("packer").startup(function(use)
 				-- default server handler (if dedicated is not defined)
 				function(source_name, methods)
 					require("mason-null-ls.automatic_setup")(source_name, methods)
-				end,
-				-- dedicated server handlers
-				prettier = function(source_name, methods)
-					null_ls.register(null_ls.builtins.formatting.prettier.with({ disabled_filetypes = { "html" } }))
-				end,
-				djlint = function(source_name, methods)
-					null_ls.register(null_ls.builtins.formatting.djlint.with({ extra_filetypes = { "html" } }))
-				end,
-			})
-		end,
-	})
-	use({
-		"hrsh7th/nvim-cmp",
-		requires = {
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-nvim-lsp-signature-help",
-			"saadparwaiz1/cmp_luasnip",
-			"onsails/lspkind.nvim",
-			"windwp/nvim-autopairs",
-		},
-		config = function()
-			local cmp = require("cmp")
-			local luasnip = require("luasnip")
-			local lspkind = require("lspkind")
-
-			cmp.setup({
-				-- completion = { autocomplete = false },
-				sources = cmp.config.sources({
-					{ name = "nvim_lsp" },
-					{ name = "nvim_lsp_signature_help" },
-					{ name = "vim-dadbod-completion" },
-					{ name = "luasnip", keyword_length = 2 },
-				}),
-				snippet = {
-					expand = function(args)
-						luasnip.lsp_expand(args.body)
-					end,
-				},
-				formatting = {
-					format = lspkind.cmp_format({ maxwidth = 50, ellipsis_char = "..." }),
-				},
-				mapping = cmp.mapping.preset.insert({
-					["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
-					["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
-					["<C-b>"] = cmp.mapping.scroll_docs(-4),
-					["<C-f>"] = cmp.mapping.scroll_docs(4),
-					["<C-Space>"] = cmp.mapping.complete(),
-					["<C-e>"] = cmp.mapping.abort(),
-					["<CR>"] = cmp.mapping.confirm({ select = false }),
-					["<Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_next_item()
-						elseif luasnip.expand_or_jumpable() then
-							luasnip.expand_or_jump()
-						else
-							fallback()
-						end
-					end, { "i", "s" }),
-					["<S-Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_prev_item()
-						elseif luasnip.jumpable(-1) then
-							luasnip.jump(-1)
-						else
-							fallback()
-						end
-					end, { "i", "s" }),
-				}),
-			})
-
-			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-
-			vim.o.completeopt = "menu,menuone,noselect"
-			vim.api.nvim_create_autocmd("LspAttach", {
-				desc = "LSP actions",
-				callback = function()
-					local bufmap = function(mode, lhs, rhs)
-						vim.keymap.set(mode, lhs, rhs, { buffer = true })
-					end
-					bufmap("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>") -- Displays hover information about the symbol under the cursor
-					bufmap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>") -- Jump to the definition
-					bufmap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>") -- Jump to declaration
-					bufmap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>") -- Lists all the implementations for the symbol under the cursor
-					bufmap("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>") -- Jumps to the definition of the type symbol
-					bufmap("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>") -- Lists all the references
-					bufmap("n", "ghs", "<cmd>lua vim.lsp.buf.signature_help()<cr>") -- Displays a function's signature information
-					bufmap("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>") -- Renames all references to the symbol under the cursor
-					bufmap("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>") -- Selects a code action available at the current cursor position
-					bufmap("x", "<F4>", "<cmd>lua vim.lsp.buf.range_code_action()<cr>") -- Selects a code action available at the current cursor position
-					bufmap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>") -- Show diagnostics in a floating window
-					bufmap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<cr>") -- Move to the previous diagnostic
-					bufmap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<cr>") -- Move to the next diagnostic
 				end,
 			})
 		end,
