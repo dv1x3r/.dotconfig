@@ -7,7 +7,6 @@ vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.signcolumn = "yes"
 vim.o.clipboard = "unnamedplus"
-vim.o.completeopt = "menu,menuone,noselect"
 
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -281,6 +280,7 @@ require("packer").startup(function(use)
 			require("fidget").setup()
 			local lspkind = require("lspkind")
 			local lsp = require("lsp-zero")
+
 			lsp.preset("recommended")
 			lsp.nvim_workspace()
 			lsp.ensure_installed({
@@ -291,7 +291,12 @@ require("packer").startup(function(use)
 				"html",
 				"cssls",
 			})
+
 			lsp.setup_nvim_cmp({
+				preselect = "none",
+				completion = {
+					completeopt = "menu,menuone,noinsert,noselect",
+				},
 				sources = {
 					{ name = "nvim_lsp" },
 					{ name = "nvim_lsp_signature_help" },
@@ -302,6 +307,7 @@ require("packer").startup(function(use)
 					format = lspkind.cmp_format({ maxwidth = 50, ellipsis_char = "..." }),
 				},
 			})
+
 			lsp.setup()
 
 			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
@@ -329,6 +335,7 @@ require("packer").startup(function(use)
 					end
 				end,
 			})
+
 			local mason_null_ls = require("mason-null-ls")
 			mason_null_ls.setup({
 				ensure_installed = {
