@@ -7,6 +7,7 @@ vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.signcolumn = "yes"
 vim.o.clipboard = "unnamedplus"
+vim.o.completeopt = "menu,menuone,noselect"
 
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -228,7 +229,20 @@ require("packer").startup(function(use)
 				indent = { enable = true },
 				autotag = { enable = true },
 				auto_install = true,
-				ensure_installed = "all",
+				ensure_installed = {
+					"css",
+					"go",
+					"html",
+					"javascript",
+					"json",
+					"markdown",
+					"prisma",
+					"python",
+					"rust",
+					"sql",
+					"toml",
+					"typescript",
+				},
 			})
 		end,
 	})
