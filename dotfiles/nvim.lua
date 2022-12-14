@@ -281,6 +281,9 @@ require("packer").startup(function(use)
 			local lspkind = require("lspkind")
 			local lsp = require("lsp-zero")
 
+			-- do not override tmux navigation
+			vim.keymap.set("n", "<C-k>", ":<C-U>TmuxNavigateUp<CR>")
+
 			lsp.preset("recommended")
 			lsp.nvim_workspace()
 			lsp.ensure_installed({
