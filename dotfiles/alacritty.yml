@@ -42,9 +42,12 @@ colors:
 
 live_config_reload: true
 
+# check chars: xxd -psd
 key_bindings:
-  - { key: Tab, mods: Control, chars: "\x01\x0c" }
-  - { key: Tab, mods: Shift|Control, chars: "\x01\x08" }
+  - { key: Tab, mods: Control, chars: "\x01\x0c" } # tmux next tab
+  - { key: Tab, mods: Shift|Control, chars: "\x01\x08" } # tmux previous tab
+  - { key: T, mods: Command, chars: "\x01\x63" } # tmux new tab
+  - { key: W, mods: Command, chars: "\x01\x78" } # tmux close tab
   - { key: N, mods: Command, action: SpawnNewInstance }
   - { key: Back, mods: Super, chars: "\x15" } # delete word/line
   - { key: Left, mods: Alt, chars: "\x1bb" } # one word left
