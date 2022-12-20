@@ -340,8 +340,8 @@ tmux_conf_copy_to_os_clipboard=false
 # this is the place to override or undo settings
 
 # Installing tmux-256color for macOS: https://gist.github.com/bbqtd/a4ac060d6f6b9ea6fe3aabe735aa9d95
-set -g default-terminal "tmux-256color"
-set -ag terminal-overrides ",xterm-256color:RGB"set-option default-terminal "tmux-256color"
+set -g default-terminal 'xterm-256color'
+set -as terminal-overrides ',xterm*:Tc:sitm=\E[3m'
 
 # increase history size
 #set -g history-limit 10000
