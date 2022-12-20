@@ -22,8 +22,11 @@ X = "extend_line_above"
 ret = ["move_line_down", "goto_line_end"]
 C-d = ["half_page_down", "goto_window_center"]
 C-u = ["half_page_up", "goto_window_center"]
+"{" = "goto_prev_paragraph"
+"}" = "goto_next_paragraph"
 
 [keys.normal.space]
 q = ":quit"
 w = ":write"
 x = ":bc"
+
