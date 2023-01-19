@@ -16,6 +16,9 @@ insert = "bar"
 [editor.indent-guides]
 render = true
 
+[editor.file-picker]
+hidden = false
+
 [keys.normal]
 G = "goto_file_end"
 X = "extend_line_above"
