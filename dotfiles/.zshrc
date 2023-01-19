@@ -112,7 +112,7 @@ source $ZSH/oh-my-zsh.sh
 # git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 
 export EDITOR="nvim"
-alias ll="ls -laFG"
+alias ll="ls -laFGh"
 alias v="nvim"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
