@@ -111,8 +111,11 @@ source $ZSH/oh-my-zsh.sh
 # sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 # git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 
-export EDITOR="nvim"
+export EDITOR="hx"
 alias ll="ls -laFGh"
+alias dff="df -h"
+alias duu="du -hsc *"
+alias t5="ps -eo comm,pcpu --sort -pcpu | head -5; ps -eo comm,pmem --sort -pmem | head -5"
 alias v="nvim"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
