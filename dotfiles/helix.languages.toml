@@ -5,3 +5,7 @@ language-server = { command = "pyright-langserver", args = ["--stdio"] }
 formatter = { command = "black", args = ["-", "-q"] }
 auto-format = true
 config = {}
+
+[[language]]
+name = "html"
+auto-format = false

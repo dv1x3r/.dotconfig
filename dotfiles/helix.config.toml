@@ -7,7 +7,7 @@ cursorline = true
 true-color = true
 
 [editor.statusline]
-left = ["mode", "spinner", "file-name"]
+left = ["mode", "spinner", "version-control", "file-name"]
 right = ["diagnostics", "selections", "position", "file-encoding", "file-type"]
 
 [editor.cursor-shape]
@@ -33,3 +33,5 @@ q = ":quit"
 w = ":write"
 x = ":bc"
 
+[editor.soft-wrap]
+enable = true
