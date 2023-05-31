@@ -2,16 +2,20 @@ theme = "catppuccin_mocha"
 
 [editor]
 line-number = "relative"
-bufferline = "always"
+bufferline = "multiple"
 cursorline = true
+color-modes = true
 true-color = true
+scrolloff = 10
 
 [editor.statusline]
 left = ["mode", "spinner", "version-control", "file-name"]
-right = ["diagnostics", "selections", "position", "file-encoding", "file-type"]
+right = ["diagnostics", "selections", "position-percentage", "position", "separator", "file-encoding", "file-line-ending", "file-type"]
 
 [editor.cursor-shape]
 insert = "bar"
+normal = "block"
+select = "underline"
 
 [editor.indent-guides]
 render = true
@@ -21,17 +25,23 @@ hidden = false
 
 [keys.normal]
 G = "goto_file_end"
-X = "extend_line_above"
-ret = ["move_line_down", "goto_line_end"]
+X = "extend_line_up"
 C-d = ["half_page_down", "goto_window_center"]
 C-u = ["half_page_up", "goto_window_center"]
 "{" = "goto_prev_paragraph"
 "}" = "goto_next_paragraph"
+ret = ["move_line_down", "goto_line_end"]
+A-z = ":toggle-option soft-wrap.enable"
+C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+space = {w = ":w", x = ":bc", X = ":bc!", q = ":q", Q = ":q!"}
 
-[keys.normal.space]
-q = ":quit"
-w = ":write"
-x = ":bc"
+[keys.select]
+G = "goto_file_end"
+X = "extend_line_up"
+C-d = ["half_page_down", "goto_window_center"]
+C-u = ["half_page_up", "goto_window_center"]
+"{" = "goto_prev_paragraph"
+"}" = "goto_next_paragraph"
+ret = ["move_line_down", "goto_line_end"]
 
-[editor.soft-wrap]
-enable = true
