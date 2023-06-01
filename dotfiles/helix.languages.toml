@@ -7,5 +7,10 @@ auto-format = true
 config = {}
 
 [[language]]
-name = "html"
-auto-format = false
+name = "djangohtml"
+scope = "source.html.django"
+file-types = []
+roots = []
+auto-format = true
+formatter = { command = "djlint", args = ["-", "--reformat", "--quiet"] }
+
