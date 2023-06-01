@@ -7,10 +7,13 @@ auto-format = true
 config = {}
 
 [[language]]
-name = "djangohtml"
-scope = "source.html.django"
+name = "htmldjango"
+scope = "source.htmldjango"
 file-types = []
 roots = []
 auto-format = true
 formatter = { command = "djlint", args = ["-", "--reformat", "--quiet"] }
 
+[[grammar]]
+name = "htmldjango"
+source = { git = "https://github.com/interdependence/tree-sitter-htmldjango" , rev = "b2dba02eddab66be669022320273d0dfe1ff923d" }
