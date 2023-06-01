@@ -24,12 +24,12 @@ render = true
 hidden = false
 
 [keys.normal]
-G = "goto_file_end"
-X = "extend_line_up"
 C-d = ["half_page_down", "goto_window_center"]
 C-u = ["half_page_up", "goto_window_center"]
 "{" = "goto_prev_paragraph"
 "}" = "goto_next_paragraph"
+G = "goto_file_end"
+X = "extend_line_up"
 ret = ["move_line_down", "goto_line_end"]
 A-z = ":toggle-option soft-wrap.enable"
 C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
@@ -37,11 +37,8 @@ C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_befor
 space = {w = ":w", x = ":bc", X = ":bc!", q = ":q", Q = ":q!"}
 
 [keys.select]
-G = "goto_file_end"
-X = "extend_line_up"
 C-d = ["half_page_down", "goto_window_center"]
 C-u = ["half_page_up", "goto_window_center"]
 "{" = "goto_prev_paragraph"
 "}" = "goto_next_paragraph"
-ret = ["move_line_down", "goto_line_end"]
-
+G = "goto_file_end"
