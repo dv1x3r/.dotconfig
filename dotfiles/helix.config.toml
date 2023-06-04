@@ -34,7 +34,7 @@ ret = ["move_line_down", "goto_line_end"]
 A-z = ":toggle-option soft-wrap.enable"
 C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
 C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
-space = {w = ":w", x = ":bc", X = ":bc!", q = ":q", Q = ":q!"}
+space = {w = ":w", W = [":w", ":bc"], x = ":bc", X = ":bc!", q = ":q", Q = ":q!"}
 
 [keys.select]
 C-d = ["half_page_down", "goto_window_center"]
