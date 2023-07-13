@@ -1,7 +1,6 @@
 include .env
-export
 
-GOOSE=goose -dir=./migrations
+GOOSE=goose -dir=./migrations ${GOOSE_DRIVER} ${GOOSE_DBSTRING}
 
 build:
 	go build -o bin/main
