@@ -112,11 +112,18 @@ source $ZSH/oh-my-zsh.sh
 # git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 
 export EDITOR="hx"
-alias ll="ls -laFGh"
+# alias ll="ls -laFGh"
+alias ll="gls -laFh --color --group-directories-first"
 alias dff="df -h"
 alias duu="du -hsc *"
 alias t5="ps -eo comm,pcpu --sort -pcpu | head -5; ps -eo comm,pmem --sort -pmem | head -5"
 alias v="nvim"
+alias gpt="~/source/llama.cpp/main -m ~/source/llama.cpp/models/WizardLM-13B-1.0.ggmlv3.q4_0.bin -n 512 -ngl 1 --interactive-first"
+alias gptu="~/source/llama.cpp/main -m ~/source/llama.cpp/models/Wizard-Vicuna-13B-Uncensored.ggmlv3.q4_0.bin -n 512 -ngl 1 --interactive-first"
+
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
