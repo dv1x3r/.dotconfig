@@ -8,6 +8,7 @@ build:
 
 compile:
 	GOOS=darwin GOARCH=arm64 go build -o ./bin/$(APP_NAME)-darwin-arm64
+	GOOS=linux GOARCH=arm64 go build -o ./bin/$(APP_NAME)-linux-arm64
 	GOOS=linux GOARCH=amd64 go build -o ./bin/$(APP_NAME)-linux-amd64
 	GOOS=windows GOARCH=amd64 go build -o ./bin/$(APP_NAME)-windows-amd64.exe
 
