@@ -113,7 +113,7 @@ source $ZSH/oh-my-zsh.sh
 
 export EDITOR="hx"
 # alias ll="ls -laFGh"
-alias ll="gls -laFh --color --group-directories-first"
+alias {ll,l}="gls -laFh --color --group-directories-first"
 alias dff="df -h"
 alias duu="du -hsc *"
 alias t5="ps -eo comm,pcpu --sort -pcpu | head -5; ps -eo comm,pmem --sort -pmem | head -5"
