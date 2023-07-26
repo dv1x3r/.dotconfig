@@ -1,0 +1,12 @@
+export EDITOR=hx
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
+alias {ll,l}="gls -laFh --color --group-directories-first"
+alias dff="df -h"
+alias duu="du -hsc *"
+alias t5="ps -eo comm,pcpu --sort -pcpu | head -5; ps -eo comm,pmem --sort -pmem | head -5"
+alias gpt="~/source/llama.cpp/main -m ~/source/llama.cpp/models/WizardLM-13B-1.0.ggmlv3.q4_0.bin -n 512 -ngl 1 --interactive-first"
+alias gptu="~/source/llama.cpp/main -m ~/source/llama.cpp/models/Wizard-Vicuna-13B-Uncensored.ggmlv3.q4_0.bin -n 512 -ngl 1 --interactive-first"
+
