@@ -63,3 +63,6 @@ hidden = false
 "X" = ["extend_line_up", "extend_to_line_bounds"]
 "i" = ["insert_mode", "collapse_selection"]
 "a" = ["append_mode", "collapse_selection"]
+
+[keys.insert.j]
+"k" = "normal_mode"
