@@ -64,5 +64,5 @@ hidden = false
 "i" = ["insert_mode", "collapse_selection"]
 "a" = ["append_mode", "collapse_selection"]
 
-[keys.insert.j]
-"k" = "normal_mode"
+# [keys.insert.j]
+# "k" = "normal_mode"
