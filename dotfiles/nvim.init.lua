@@ -155,8 +155,8 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
-    -- Modern database interface
-  { 'tpope/vim-dadbod' },
+  -- Modern database interface
+  'tpope/vim-dadbod',
   {
     'kristijanhusak/vim-dadbod-ui',
     config = function()
@@ -168,7 +168,11 @@ require('lazy').setup({
     end,
   },
 
-  { 'ThePrimeagen/vim-be-good', },
+  -- Seamless navigation between tmux panes and vim splits
+  'christoomey/vim-tmux-navigator',
+
+  -- vim-be-good is a nvim plugin designed to make you better at Vim Movements
+  'ThePrimeagen/vim-be-good',
 
 }, {})
 

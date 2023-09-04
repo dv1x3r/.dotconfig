@@ -4,6 +4,9 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 
 alias {ll,l}="LC_ALL=C gls -laFh --color --group-directories-first"
+alias lt="tree"
+alias lg="lazygit"
+alias gs="git status"
 alias dff="df -h"
 alias duu="du -hsc *"
 alias t5="ps -eo comm,pcpu --sort -pcpu | head -5; ps -eo comm,pmem --sort -pmem | head -5"
