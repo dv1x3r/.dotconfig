@@ -58,8 +58,7 @@ t5
 
 ```sh
 # apt
-sudo apt update
-sudo apt upgrade
+sudo apt update && sudo apt upgrade
 sudo apt install \
   git zip unzip curl wget mosh tmux \
   tree lnav bat sqlite3 gettext \
@@ -67,10 +66,12 @@ sudo apt install \
   gcc python3-dev
 
 # snap
-sudo apt install snapd
-sudo snap install core
+sudo apt install snapd && sudo snap install core
 sudo snap install --beta nvim --classic
 snap install --classic helix
+
+# poetry
+curl -sSL https://install.python-poetry.org | python3 -
 
 # config
 git clone git@github.com:dv1x3r/config.git ~/source/config
@@ -95,9 +96,6 @@ ln -s ~/source/config/dotfiles/helix.languages.toml ~/.config/helix/languages.to
 ```
 
 ```sh
-# poetry
-curl -sSL https://install.python-poetry.org | python3 -
-
 # nginx
 curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
     | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
@@ -112,15 +110,45 @@ sudo apt update
 sudo apt install nginx
 sudo systemctl status nginx
 
+# certbot
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+sudo certbot --nginx
+```
+
+```sh
 # postgres
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt update
-sudo apt install postgresql-15
+sudo apt update && sudo apt install postgresql-15
 sudo systemctl status postgresql
 
-# certbot
-sudo apt install snapd && sudo snap install core
-sudo snap install --classic certbot
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
+# configure
+sudo systemctl status postgresql
+sudo systemctl start postgresql
+sudo -u postgres psql
+
+# \l  - list databases
+# \c  - test switch database
+# \dt - list tables
+
+CREATE DATABASE teh_db TEMPLATE=template0 ENCODING 'UTF-8' LC_COLLATE 'ru_RU.UTF-8' LC_CTYPE 'ru_RU.UTF-8';
+CREATE USER teh WITH PASSWORD 'password';
+ALTER ROLE teh SET client_encoding TO 'utf8';
+ALTER ROLE teh SET default_transaction_isolation TO 'read committed';
+ALTER ROLE teh SET timezone TO 'Europe/Riga';
+\c teh_db
+CREATE SCHEMA teh AUTHORIZATION teh;
+GRANT CREATE ON DATABASE "teh_db" TO teh;
+
+# /etc/postgresql/15/main/postgresql.conf
+# listen_addresses = '*'
+
+# /etc/postgresql/15/main/pg_hba.conf
+# host    all             teh             0.0.0.0/0               scram-sha-256
+# host    all             teh             ::/0                    scram-sha-256
+
+# postgres backup
+pg_dump -d teh -f teh_backup.sql
 ```
+
