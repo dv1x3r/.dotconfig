@@ -1,10 +1,10 @@
-name: Go Build, Test, Deploy
+name: Go deployment
 
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+on: workflow_dispatch
+  # push:
+  #   branches: [ "master" ]
+  # pull_request:
+  #   branches: [ "master" ]
 
 jobs:
 
@@ -19,15 +19,48 @@ jobs:
     - name: Install gcc-aarch64-linux-gnu
       run: sudo apt install -y gcc-aarch64-linux-gnu libc6-dev-arm64-cross
 
-    - name: Build arm64
-      run: GOARCH=arm64 CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc go build -o ./bin/main-linux-arm64
+    - name: Go Build arm64
+      run: GOARCH=arm64 CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc go build -o ./bin/mr-weasel
 
-    - name: Test
+    - name: Go Test -v
       run: go test -v ./...
 
-    - name: Upload artifact
+    - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: build
-        path: bin
+        path: |
+          bin
+          app.service
 
+    - name: Upload migrations artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: migrations
+        path: migrations
+
+  deploy:
+    needs: build
+    runs-on: self-hosted-teh
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: ~/app/mr-weasel
+
+      - name: Download migrations artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: migrations
+          path: ~/app/mr-weasel/migrations
+
+      - name: Migrage database
+        working-directory: /home/weasel/app/mr-weasel
+        run: |
+          source .env
+          goose -dir=./migrations ${GOOSE_DRIVER} ${GOOSE_DBSTRING} up
+
+      - name: Restart service
+        run: sudo systemctl restart mr-weasel.service
+        # weasel ALL = NOPASSWD: /bin/systemctl reload mr-weasel.service

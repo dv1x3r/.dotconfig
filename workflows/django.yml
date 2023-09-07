@@ -48,22 +48,22 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build
-          path: /home/weasel/app/${{ github.event.repository.name }}
+          path: /home/weasel/app/teh-lv
       
       - name: Install dependencies
-        working-directory: /home/weasel/app/${{ github.event.repository.name }}
+        working-directory: /home/weasel/app/teh-lv
         run: poetry install
       
       - name: Migrate database
-        working-directory: /home/weasel/app/${{ github.event.repository.name }}
+        working-directory: /home/weasel/app/teh-lv
         run: poetry run python ./manage.py migrate
 
       - name: Collect static files
-        working-directory: /home/weasel/app/${{ github.event.repository.name }}
+        working-directory: /home/weasel/app/teh-lv
         run: poetry run python ./manage.py collectstatic --noinput
       
       - name: Compile translations
-        working-directory: /home/weasel/app/${{ github.event.repository.name }}
+        working-directory: /home/weasel/app/teh-lv
         run: poetry run python ./manage.py compilemessages
 
       - name: Reload gunicorn

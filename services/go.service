@@ -1,0 +1,20 @@
+[Unit]
+Description = telegram chat bot (mr-weasel)
+ConditionPathExists=/home/weasel/app/mr-weasel/mr-weasel
+After = network.target
+
+[Service]
+User = weasel
+Group = weasel
+
+WorkingDirectory = /home/weasel/app/mr-weasel
+ExecStart = /home/weasel/app/mr-weasel/mr-weasel
+
+StandardOutput=append:/var/log/mr-weasel/out.log
+StandardError=append:/var/log/mr-weasel/err.log
+
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy = multi-user.target

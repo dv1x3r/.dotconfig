@@ -1,0 +1,23 @@
+[Unit]
+Description = gunicorn with production config (teh-lv)
+After = network.target
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+PermissionsStartOnly = true
+PIDFile = /run/gunicorn/gunicorn.pid
+User = weasel
+Group = weasel
+WorkingDirectory = /home/weasel/app/teh-lv
+ExecStartPre = /bin/mkdir -pv /var/run/gunicorn /var/log/gunicorn
+ExecStartPre = /bin/chown weasel:weasel /var/run/gunicorn /var/log/gunicorn
+ExecStart = /home/weasel/app/teh-lv/.venv/bin/gunicorn -c config/gunicorn.prod.py
+ExecReload = /bin/kill -s HUP $MAINPID
+ExecStop = /bin/kill -s TERM $MAINPID
+PrivateTmp = true
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy = multi-user.target
