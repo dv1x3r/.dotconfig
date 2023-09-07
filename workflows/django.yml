@@ -1,0 +1,71 @@
+name: Django deployment
+
+on: workflow_dispatch
+  # push:
+  #   branches: [ "master" ]
+  # pull_request:
+  #   branches: [ "master" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install poetry
+      run: curl -sSL https://install.python-poetry.org | python3 -
+
+    - name: Install dependencies
+      run: poetry install
+
+    - name: Prepare sample .env
+      run: cp .env.example .env
+
+    - name: Django Test
+      run: |
+        poetry run ./manage.py check
+        poetry run ./manage.py test
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build
+        path: |
+          .
+          !.env
+          !./.venv
+          !./.git
+
+  deploy:
+    needs: build
+    runs-on: self-hosted-teh
+    steps:
+      - name: Download app artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: /home/weasel/app/${{ github.event.repository.name }}
+      
+      - name: Install dependencies
+        working-directory: /home/weasel/app/${{ github.event.repository.name }}
+        run: poetry install
+      
+      - name: Migrate database
+        working-directory: /home/weasel/app/${{ github.event.repository.name }}
+        run: poetry run python ./manage.py migrate
+
+      - name: Collect static files
+        working-directory: /home/weasel/app/${{ github.event.repository.name }}
+        run: poetry run python ./manage.py collectstatic --noinput
+      
+      - name: Compile translations
+        working-directory: /home/weasel/app/${{ github.event.repository.name }}
+        run: poetry run python ./manage.py compilemessages
+
+      - name: Reload gunicorn
+        run: sudo systemctl reload gunicorn.service
+        # weasel ALL = NOPASSWD: /bin/systemctl reload gunicorn.service

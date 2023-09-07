@@ -68,13 +68,13 @@ sudo apt install \
 # snap
 sudo apt install snapd && sudo snap install core
 sudo snap install --beta nvim --classic
-snap install --classic helix
+sudo snap install --classic helix
 
 # poetry
 curl -sSL https://install.python-poetry.org | python3 -
 
 # config
-git clone git@github.com:dv1x3r/config.git ~/source/config
+git clone git@github.com:dv1x3r/.dotconfig.git ~/.dotconfig
 git clone https://github.com/gpakosz/.tmux.git ~/.tmux
 
 # bat
@@ -83,16 +83,16 @@ ln -s /usr/bin/batcat ~/.local/bin/bat
 
 # tmux
 ln -s ~/.tmux/.tmux.conf ~/.tmux.conf
-ln -s ~/.tmux/.tmux.conf.local ~/.tmux.conf.local
+ln -s ~/.dotconfig/dotfiles/.tmux.conf.local ~/.tmux.conf.local
 
 # nvim
 mkdir -p ~/.config/nvim
-ln -s ~/source/config/dotfiles/nvim.init.lua ~/.config/nvim/init.lua
+ln -s ~/.dotconfig/dotfiles/nvim.init.lua ~/.config/nvim/init.lua
 
 # helix
 mkdir -p ~/.config/helix
-ln -s ~/source/config/dotfiles/helix.config.toml ~/.config/helix/config.toml
-ln -s ~/source/config/dotfiles/helix.languages.toml ~/.config/helix/languages.toml
+ln -s ~/.dotconfig/dotfiles/helix.config.toml ~/.config/helix/config.toml
+ln -s ~/.dotconfig/dotfiles/helix.languages.toml ~/.config/helix/languages.toml
 ```
 
 ```sh
