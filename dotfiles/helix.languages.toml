@@ -16,4 +16,14 @@ formatter = { command = "djlint", args = ["-", "--reformat", "--quiet"] }
 
 [[grammar]]
 name = "htmldjango"
-source = { git = "https://github.com/interdependence/tree-sitter-htmldjango" , rev = "b2dba02eddab66be669022320273d0dfe1ff923d" }
+source = { git = "https://github.com/interdependence/tree-sitter-htmldjango", rev = "b2dba02eddab66be669022320273d0dfe1ff923d" }
+
+[[language]]
+name = "markdown"
+auto-format = true
+formatter = { command = "dprint", args = ["fmt", "--stdin", "md"] }
+
+[[language]]
+name = "toml"
+auto-format = true
+formatter = { command = "dprint", args = ["fmt", "--stdin", "toml"] }
