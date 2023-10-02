@@ -12,7 +12,15 @@ scrolloff = 10
 
 [editor.statusline]
 left = ["mode", "spinner", "version-control", "file-name", "file-modification-indicator"]
-right = ["diagnostics", "position-percentage", "position", "separator", "file-encoding", "file-line-ending", "file-type"]
+right = [
+  "diagnostics",
+  "position-percentage",
+  "position",
+  "separator",
+  "file-encoding",
+  "file-line-ending",
+  "file-type",
+]
 
 [editor.cursor-shape]
 insert = "bar"
@@ -63,6 +71,9 @@ hidden = false
 "X" = ["extend_line_up", "extend_to_line_bounds"]
 "i" = ["insert_mode", "collapse_selection"]
 "a" = ["append_mode", "collapse_selection"]
+
+[keys.insert]
+"C-space" = "signature_help"
 
 # [keys.insert.j]
 # "k" = "normal_mode"
