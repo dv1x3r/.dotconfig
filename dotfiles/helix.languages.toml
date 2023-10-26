@@ -1,10 +1,14 @@
+[language-server.pyright]
+command = "pyright-langserver"
+args = ["--stdio"]
+config = {}
+
 [[language]]
 name = "python"
 roots = ["pyproject.toml"]
-language-server = { command = "pyright-langserver", args = ["--stdio"] }
+language-servers = ["pyright"]
 formatter = { command = "black", args = ["-", "-q"] }
 auto-format = true
-config = {}
 
 [[language]]
 name = "htmldjango"
