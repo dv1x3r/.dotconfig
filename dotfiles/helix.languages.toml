@@ -1,11 +1,5 @@
-[language-server.pyright]
-command = "pyright-langserver"
-args = ["--stdio"]
-config = {}
-
 [[language]]
 name = "python"
-roots = ["pyproject.toml"]
 language-servers = ["pyright"]
 formatter = { command = "black", args = ["-", "-q"] }
 auto-format = true
@@ -31,3 +25,7 @@ formatter = { command = "dprint", args = ["fmt", "--stdin", "md"] }
 name = "toml"
 auto-format = true
 formatter = { command = "dprint", args = ["fmt", "--stdin", "toml"] }
+
+[[language]]
+name = "templ"
+auto-format = true
