@@ -29,7 +29,3 @@ formatter = { command = "dprint", args = ["fmt", "--stdin", "toml"] }
 [[language]]
 name = "templ"
 auto-format = true
-
-[[grammar]]
-name = "templ"
-source = { git = "https://github.com/vrischmann/tree-sitter-templ", rev = "c3baaab33f1f1032eedd3613cd932284975bd21f" }

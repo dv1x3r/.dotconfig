@@ -34,8 +34,6 @@ render = true
 hidden = false
 
 [keys.normal]
-"C-d" = ["half_page_down", "goto_window_center"]
-"C-u" = ["half_page_up", "goto_window_center"]
 "{" = "goto_prev_paragraph"
 "}" = "goto_next_paragraph"
 "0" = "goto_line_start"
@@ -58,8 +56,6 @@ hidden = false
 "A-k" = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
 
 [keys.select]
-"C-d" = ["half_page_down", "goto_window_center"]
-"C-u" = ["half_page_up", "goto_window_center"]
 "{" = "goto_prev_paragraph"
 "}" = "goto_next_paragraph"
 "0" = "goto_line_start"
