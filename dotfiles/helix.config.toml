@@ -11,9 +11,19 @@ true-color = true
 scrolloff = 10
 
 [editor.statusline]
-left = ["mode", "spinner", "version-control", "file-name", "file-modification-indicator"]
+left = [
+  "mode",
+  "spinner",
+  "version-control",
+  "file-name",
+  "read-only-indicator",
+  "file-modification-indicator",
+]
+
 right = [
   "diagnostics",
+  "selections",
+  "register",
   "position-percentage",
   "position",
   "separator",
