@@ -27,5 +27,10 @@ auto-format = true
 formatter = { command = "dprint", args = ["fmt", "--stdin", "toml"] }
 
 [[language]]
+name = "gotmpl"
+auto-format = true
+formatter = { command = "djlint", args = ["-", "--reformat", "--quiet", "--profile=golang"] }
+
+[[language]]
 name = "templ"
 auto-format = true
