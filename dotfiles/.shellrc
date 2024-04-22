@@ -9,12 +9,15 @@ alias lg="lazygit"
 alias gs="git status"
 alias dff="df -h"
 alias duu="du -hsc *"
+alias gs="git status"
 alias t5="ps -eo comm,pcpu --sort -pcpu | head -5; ps -eo comm,pmem --sort -pmem | head -5"
-alias gpt="~/source/llama.cpp/main -m ~/source/llama.cpp/models/WizardLM-13B-1.0.ggmlv3.q4_0.bin -n 512 -ngl 1 --interactive-first"
-alias gptu="~/source/llama.cpp/main -m ~/source/llama.cpp/models/Wizard-Vicuna-13B-Uncensored.ggmlv3.q4_0.bin -n 512 -ngl 1 --interactive-first"
+alias hcp="mosh hcp"
 
 # profile
 eval $(ssh-agent) > /dev/null
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+PATH="$PATH:$HOME/.local/bin"
 PATH="$PATH:$HOME/go/bin"
+PATH="$PATH:$HOME/.config/emacs/bin"
+PATH="$PATH:/opt/mssql-tools18/bin"
 
