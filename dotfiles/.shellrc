@@ -3,15 +3,24 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 
-alias {ll,l}="LC_ALL=C gls -laFh --color --group-directories-first"
+# alias {ls,ll,l}='ls -laFh --color=auto --group-directories-first'
+alias {ls,ll,l}="gls -laFh --color --group-directories-first"
+
+# Some more alias to avoid making mistakes:
+alias rm='rm -i'
+# alias cp='cp -i'
+# alias mv='mv -i'
+
+# Personal aliases
 alias lt="tree --gitignore --dirsfirst"
+alias lz="lazydocker"
 alias lg="lazygit"
-alias gs="git status"
 alias dff="df -h"
 alias duu="du -hsc *"
+alias gs="git status"
+
+# top 5 processes
 alias t5="ps -eo comm,pcpu --sort -pcpu | head -5; ps -eo comm,pmem --sort -pmem | head -5"
-alias gpt="~/source/llama.cpp/main -m ~/source/llama.cpp/models/WizardLM-13B-1.0.ggmlv3.q4_0.bin -n 512 -ngl 1 --interactive-first"
-alias gptu="~/source/llama.cpp/main -m ~/source/llama.cpp/models/Wizard-Vicuna-13B-Uncensored.ggmlv3.q4_0.bin -n 512 -ngl 1 --interactive-first"
 
 # profile
 eval $(ssh-agent) > /dev/null
