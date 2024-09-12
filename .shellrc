@@ -3,13 +3,13 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 
-# alias {ls,ll,l}='ls -laFh --color=auto --group-directories-first'
+alias {ls,ll,l}='ls -laFh --color=auto --group-directories-first'
 alias {ls,ll,l}="gls -laFh --color --group-directories-first"
 
 # Some more alias to avoid making mistakes:
 alias rm='rm -i'
-# alias cp='cp -i'
-# alias mv='mv -i'
+alias cp='cp -i'
+alias mv='mv -i'
 
 # Personal aliases
 alias lt="tree --gitignore --dirsfirst"
@@ -27,6 +27,4 @@ eval $(ssh-agent) > /dev/null
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 PATH="$PATH:$HOME/.local/bin"
 PATH="$PATH:$HOME/go/bin"
-PATH="$PATH:$HOME/.config/emacs/bin"
-PATH="$PATH:/opt/mssql-tools18/bin"
 
