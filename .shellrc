@@ -1,9 +1,6 @@
 export EDITOR=hx
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
 
-alias {ls,ll,l}='ls -laFh --color=auto --group-directories-first'
+alias {ls,ll,l}='LC_ALL=C ls -laFh --color=auto --group-directories-first'
 alias {ls,ll,l}="gls -laFh --color --group-directories-first"
 
 # Some more alias to avoid making mistakes:
