@@ -34,3 +34,11 @@ formatter = { command = "djlint", args = ["-", "--reformat", "--quiet", "--profi
 [[language]]
 name = "templ"
 auto-format = true
+language-servers = ["templ", "emmet-ls", "tailwindcss-ls"]
+
+[language-server.tailwindcss-ls]
+config = { userLanguages = { templ = "html", "*.templ" = "html" } }
+
+[language-server.emmet-ls]
+command="emmet-ls"
+args = ["--stdio"]
