@@ -1,4 +1,5 @@
 GOOSE=./build/tools/goose -dir=./migrations sqlite ./build/data.db
+.PHONY: go-tools build run test db-up db-up-to db-up-by-one db-down db-down-to db-status db-reset db-create
 
 go-tools:
 	GOBIN=$(shell pwd)/build/tools go install github.com/pressly/goose/v3/cmd/goose@v3.22.0
