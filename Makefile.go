@@ -1,10 +1,13 @@
-GOOSE=goose -dir=./migrations sqlite ./tmp/data.db
+GOOSE=./build/tools/goose -dir=./migrations sqlite ./build/data.db
+
+go-tools:
+	GOBIN=$(shell pwd)/build/tools go install github.com/pressly/goose/v3/cmd/goose@v3.22.0
 
 build:
-	go build -o tmp/server
+	go build -o ./build/app ./main.go
 
 run:
-	go build -o ./tmp/server && ./tmp/server
+	go build -o ./build/app ./main.go && ./build/app
 
 test:
 	go test -v ./...
@@ -35,9 +38,4 @@ db-reset:
 db-create:
 	@read -p "Migration name: " VALUE; \
 	$(GOOSE) create "$$VALUE" sql
-
-go-tools:
-	go install golang.org/x/tools/gopls@latest
-	go install github.com/go-delve/delve/cmd/dlv@latest
-	go install github.com/pressly/goose/v3/cmd/goose@latest
 
